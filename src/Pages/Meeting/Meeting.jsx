@@ -16,6 +16,7 @@ const Meeting = () => {
                     <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
                         {/* Sidebar content here */}
                         <li><Link to="/callmeeting">Call Meeting</Link></li>
+                        <li><Link to="/generateminutes">Generate Minutes</Link></li>
                         <li><Link to="/meetinglist">Meeting List</Link></li>
                     </ul>
 
