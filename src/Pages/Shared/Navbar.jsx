@@ -1,45 +1,74 @@
-import { Link } from "react-router-dom";
 
+import { Link } from 'react-router-dom';
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
+} from "@/components/ui/navigation-menu";
+import { Button } from '@/components/ui/button';
 
-const Navbar = () => {
-    return (
-        <div>
-            <div className="navbar bg-base-100">
-                <div className="navbar-start">
-                    <div className="dropdown">
-                        <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
-                        </div>
-                        <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                        <li><Link to="/">Home</Link></li>
-                        <li><Link to="/meeting">Meeting</Link></li>
-                        <li><Link to="/profile">Profile</Link></li>
-                        </ul>
-                    </div>
-                    <a className="btn btn-ghost text-xl">Meeting Management</a>
-                </div>
-                <div className="navbar-center hidden lg:flex">
-                    <ul className="menu menu-horizontal px-1">
-                        <li><Link to="/">Home</Link></li>
-                        <li><Link to="/meeting">Meeting</Link></li>
-                        <li><Link to="/profile">Profile</Link></li>
-                    </ul>
-                </div>
+const Header = () => {
+  return (
+    <header className="flex items-center justify-between bg-gray-800 p-4">
+      {/* Left side: Project name */}
+      <span className="text-white text-lg font-bold">Meeting Management</span>
 
+      {/* Middle: Navigation menu */}
+      <NavigationMenu>
+        <NavigationMenuList>
+          {/* Home */}
+          <NavigationMenuItem>
+            <Link to="/" className="block px-4 py-2  text-sm text-gray-300 hover:bg-gray-700">
+              Home
+            </Link>
+          </NavigationMenuItem>
 
-                <div className="navbar-end">
-                    <button className="btn btn-ghost btn-circle">
-                        <div className="indicator">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
-                            <span className="badge badge-xs badge-primary indicator-item"></span>
-                        </div>
-                    </button>
-                    <a className="btn">Logout</a>
-                </div>
-            </div>
+          {/* Meeting */}
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>Meeting</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <Link to="/callmeeting" className="block px-4 py-2 text-sm text-black hover:bg-gray-700">
+                Call Meeting
+              </Link>
+              <Link to="/generateminutes" className="block px-4 py-2 text-sm text-black-300 hover:bg-gray-700">
+                Generate Minutes
+              </Link>
+              <Link to="/meetinglist" className="block px-4 py-2 text-sm text-black-300 hover:bg-gray-700">
+                Meeting Lists
+              </Link>
 
-        </div>
-    );
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+
+          {/* Profile */}
+          <NavigationMenuItem>
+            <Link to="/profile" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
+              Profile
+            </Link>
+          </NavigationMenuItem>
+          
+          {/* Add more menu items as needed */}
+        </NavigationMenuList>
+      </NavigationMenu>
+
+      {/* Right side: Notification icon and Logout button */}
+      <div className="flex items-center gap-5">
+        {/* Notification icon (replace with your icon component) */}
+         <span className="text-white ml-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M10.3 21C10.4674 21.3044 10.7135 21.5583 11.0125 21.7352C11.3116 21.912 11.6526 22.0053 12 22.0053C12.3475 22.0053 12.6885 21.912 12.9876 21.7352C13.2866 21.5583 13.5327 21.3044 13.7 21M6 8C6 6.4087 6.63214 4.88258 7.75736 3.75736C8.88258 2.63214 10.4087 2 12 2C13.5913 2 15.1174 2.63214 16.2426 3.75736C17.3679 4.88258 18 6.4087 18 8C18 15 21 17 21 17H3C3 17 6 15 6 8Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </span>
+
+        {/* Logout button (replace with your logout button component) */}
+        <Button><Link to="/logout">
+          Logout
+        </Link></Button>
+      </div>
+    </header>
+  );
 };
 
-export default Navbar;
+export default Header;
