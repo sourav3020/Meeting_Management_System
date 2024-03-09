@@ -14,9 +14,16 @@ const CallMeeting = () => {
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedAttendees, setSelectedAttendees] = useState([]);
+    const [selectedEmails, setSelectedEmails] = useState([]);
 
     const attendeesOptions = [
         { value: 'teachers', label: 'Teachers' },
+        { value: 'students', label: 'Students' },
+        { value: 'staffs', label: 'Staffs' },
+    ];
+
+    const emailsOptions = [
+        { value: 'teacher', label: 'Teachers' },
         { value: 'students', label: 'Students' },
         { value: 'staffs', label: 'Staffs' },
     ];
@@ -30,7 +37,7 @@ const CallMeeting = () => {
         <div className="flex flex-col items-center justify-center min-h-screen bg-white">
             <div className="w-full max-w-screen-lg p-8 bg-gray-100 shadow-md">
                 <p className="text-center text-black font-inter text-2xl font-bold mb-8">Call a Meeting</p>
-                <form onSubmit={handleSubmit} className='d-flex justify-center align-middle'>
+                <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center">
                     <div className="grid w-full max-w-sm items-center gap-1.5">
                         <Label htmlFor="number">Meeting Id</Label>
                         <Input type="number" id="meetingId" placeholder="number" />
@@ -59,7 +66,7 @@ const CallMeeting = () => {
 
 
                     </div>
-                    <div className="grid w-full gap-1.5 mt-4">
+                    <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
                         <Label htmlFor="message">Agenda</Label>
                         <Textarea placeholder="Subject" id="message" />
                     </div>
@@ -81,14 +88,32 @@ const CallMeeting = () => {
                             placeholder="Select attendees"
                         />
                     </div>
+                    <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
+                        <Label htmlFor="text">Send Email Invitation</Label>
+                        <Select
+                            isMulti
+                            options={emailsOptions}
+                            value={selectedEmails}
+                            onChange={(selectedOptions) => setSelectedEmails(selectedOptions)}
+                            placeholder="Select attendees"
+                        />
+                    </div>
+                    <div className='grid grid-cols-2 gap-5 mt-10'>
+                        <Button>Create Meeting</Button>
+                        <Button style={{
+                            borderRadius: 'var(--Radii-radius-button, 6px)',
+                            border: '1px solid var(--color-border, #E4E4E7)',
+                            background: 'var(--color-bg, #FFF)',
+                            boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05)',
+                            color: 'var(--color-text-error, #DC2626)'
+                        }}>Preview</Button>
+
+                    </div>
 
 
 
                 </form>
-                <div className='grid grid-cols-2 gap-5 mt-10'>
-                    <Button>Create Meeting</Button>
-                    <Button>Preview</Button>
-                </div>
+
             </div>
         </div>
     );
