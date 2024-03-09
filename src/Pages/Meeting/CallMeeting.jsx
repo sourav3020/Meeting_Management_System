@@ -5,9 +5,13 @@ import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-clock/dist/Clock.css';
 import 'react-select';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 
 const CallMeeting = () => {
-    
+
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedAttendees, setSelectedAttendees] = useState([]);
 
@@ -26,97 +30,65 @@ const CallMeeting = () => {
         <div className="flex flex-col items-center justify-center min-h-screen bg-white">
             <div className="w-full max-w-screen-lg p-8 bg-gray-100 shadow-md">
                 <p className="text-center text-black font-inter text-2xl font-bold mb-8">Call a Meeting</p>
-                <form onSubmit={handleSubmit}>
-                    <label className="form-control">
-                        <div className="label">
-                            <span className="label-text text-black">Meeting Id</span>
-                        </div>
-                        <input
-                            type="number"
-                            placeholder="Type here"
-                            className="input text-black input-bordered w-full bg-white"
-                           
-                        />
-                    </label>
-                    <label className="form-control mt-4">
-                        <div className="label">
-                            <span className="label-text text-black">Meeting Type</span>
-                        </div>
-                        <input
-                            type="text"
-                            placeholder="Type here"
-                            className="input text-black input-bordered w-full bg-white"
-                           
-                        />
-                    </label>
+                <form onSubmit={handleSubmit} className='d-flex justify-center align-middle'>
+                    <div className="grid w-full max-w-sm items-center gap-1.5">
+                        <Label htmlFor="number">Meeting Id</Label>
+                        <Input type="number" id="meetingId" placeholder="number" />
+                    </div>
+                    <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
+                        <Label htmlFor="text">Meeting Type</Label>
+                        <Input type="text" id="meetingType" placeholder="text" />
+                    </div>
 
-                    <div className="mt-4 mb-4">
-                        <label className="form-control">
-                            <div className="label">
-                                <span className="label-text text-black">Date and Time</span>
-                            </div>
-                            <DateTimePicker
-                                onChange={setSelectedDate}
-                                value={selectedDate}
-                                style={{
-                                    width: '100%',
-                                    padding: '0.5rem',
-                                    border: '1px solid',
-                                    borderRadius: '4px',
-                                    boxSizing: 'border-box',
-                                }}
-                            />
-                        </label>
-                    </div>
-                    <label className="form-control">
-                        <div className="label">
-                            <span className="label-text text-black">Meeting Agenda</span>
-                        </div>
-                        <textarea className="textarea textarea-bordered text-black h-24 bg-white" placeholder="Subject"></textarea>
-                    </label>
-                    <label className="form-control mt-4">
-                        <div className="label">
-                            <span className="label-text text-black">Room Name</span>
-                        </div>
-                        <input
-                            type="text"
-                            placeholder="Type here"
-                            className="input text-black input-bordered w-full bg-white"
-                           
-                        />
-                    </label>
-                    <label className="form-control w-full max-w-xs mt-4">
-                        <div className="label">
-                            <span className="label-text text-black">Attach Signature</span>
-                        </div>
-                        <input type="file" className="file-input file-input-bordered w-full max-w-xs bg-white" />
-                    </label>
-                    <div className="label mt-4">
-                        <span className="label-text text-black">Who can attend?</span>
-                    </div>
-                    <Select
-                        isMulti
-                        options={attendeesOptions}
-                        value={selectedAttendees}
-                        onChange={(selectedOptions) => setSelectedAttendees(selectedOptions)}
-                        placeholder="Select attendees"
-                    />
-                    {/* The button to open modal */}
-                    <label htmlFor="my_modal_7" className="btn mt-4 text-white">Invite Via Email</label>
 
-                    {/* Put this part before </body> tag */}
-                    <input type="checkbox" id="my_modal_7" className="modal-toggle" />
-                    <div className="modal" role="dialog">
-                        <div className="modal-box">
-                            {/* Add your modal content here */}
-                        </div>
-                        <label className="modal-backdrop" htmlFor="my_modal_7">Close</label>
+                    <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
+                        <Label>Date and Time</Label>
+
+
+                        <DateTimePicker
+                            onChange={setSelectedDate}
+                            value={selectedDate}
+                            style={{
+                                width: '100%',
+                                padding: '0.5rem',
+                                border: '1px solid',
+                                borderRadius: '4px',
+                                boxSizing: 'border-box',
+                            }}
+                        />
+
+
                     </div>
-                    <div className='grid grid-cols-2 gap-10 mt-10'>
-                        <button className="btn btn-primary">Create Meeting</button>
-                        <button className="btn btn-outline btn-error">Preview</button>
+                    <div className="grid w-full gap-1.5 mt-4">
+                        <Label htmlFor="message">Agenda</Label>
+                        <Textarea placeholder="Subject" id="message" />
                     </div>
+                    <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
+                        <Label htmlFor="text">Room Name</Label>
+                        <Input type="text" id="roomName" placeholder="name" />
+                    </div>
+                    <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
+                        <Label htmlFor="picture">Signature</Label>
+                        <Input id="signature" type="file" />
+                    </div>
+                    <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
+                        <Label htmlFor="text">Who can attend?</Label>
+                        <Select
+                            isMulti
+                            options={attendeesOptions}
+                            value={selectedAttendees}
+                            onChange={(selectedOptions) => setSelectedAttendees(selectedOptions)}
+                            placeholder="Select attendees"
+                        />
+                    </div>
+
+
+
                 </form>
+                <div className='grid grid-cols-2 gap-5 mt-10'>
+                    <Button>Create Meeting</Button>
+                    <Button>Preview</Button>
+                </div>
             </div>
         </div>
     );
