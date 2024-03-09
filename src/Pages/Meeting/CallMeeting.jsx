@@ -95,7 +95,7 @@ const CallMeeting = () => {
                             options={emailsOptions}
                             value={selectedEmails}
                             onChange={(selectedOptions) => setSelectedEmails(selectedOptions)}
-                            placeholder="Select attendees"
+                            placeholder="Select emails"
                         />
                     </div>
                     <div className='grid grid-cols-2 gap-5 mt-10'>
