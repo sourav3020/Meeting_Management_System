@@ -4,42 +4,30 @@ import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuContent,
 } from "@/components/ui/navigation-menu";
 import { Button } from '@/components/ui/button';
 
 const Header = () => {
   return (
-    <header className="flex items-center justify-between bg-gray-800 p-4">
+    <header className="flex items-center md:flex-row justify-between bg-gray-800 p-4">
       {/* Left side: Project name */}
-      <span className="text-white text-lg font-bold">Meeting Management</span>
+      <span className="text-white text-lg font-bold md:mb-0">Meeting Management</span>
 
       {/* Middle: Navigation menu */}
       <NavigationMenu>
         <NavigationMenuList>
           {/* Home */}
-          <NavigationMenuItem>
+          <NavigationMenuItem className="md:flex">
             <Link to="/" className="block px-4 py-2  text-sm text-gray-300 hover:bg-gray-700">
               Home
             </Link>
           </NavigationMenuItem>
 
           {/* Meeting */}
-          <NavigationMenuItem>
-            <NavigationMenuTrigger>Meeting</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <Link to="/callmeeting" className="block px-4 py-2 text-sm text-black hover:bg-gray-700">
-                Call Meeting
-              </Link>
-              <Link to="/generateminutes" className="block px-4 py-2 text-sm text-black-300 hover:bg-gray-700">
-                Generate Minutes
-              </Link>
-              <Link to="/meetinglist" className="block px-4 py-2 text-sm text-black-300 hover:bg-gray-700">
-                Meeting Lists
-              </Link>
-
-            </NavigationMenuContent>
+          <NavigationMenuItem className="md:flex">
+            <Link to="/meeting" className="block px-4 py-2  text-sm text-gray-300 hover:bg-gray-700">
+              Meeting
+            </Link>
           </NavigationMenuItem>
 
           {/* Profile */}

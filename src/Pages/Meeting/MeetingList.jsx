@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import {
     Table,
+    TableBody,
+    TableCell,
     TableHead,
     TableHeader,
     TableRow,
@@ -9,22 +11,32 @@ import {
 
 const MeetingList = () => {
     return (
-        <div>
-               <p className="text-3xl font-bold text-center mt-4">Meeting List</p>
+        <div className="p-6 ">
+             <p className="text-center text-black  text-2xl font-bold mb-8">Meeting Information</p>
 
             <Table>
-                
+
                 <TableHeader>
                     <TableRow>
                         <TableHead>Meeting Id</TableHead>
                         <TableHead>Meeting Type</TableHead>
                         <TableHead>Date</TableHead>
                         <TableHead>Time</TableHead>
-                        <Button>Cancel</Button>
+                        <TableHead className="text-right">Cancel Meeting</TableHead>
+                        
 
                     </TableRow>
                 </TableHeader>
-              
+                <TableBody>
+                    <TableRow>
+                        <TableCell className="font-medium">845</TableCell>
+                        <TableCell>Academic</TableCell>
+                        <TableCell>24/3/2</TableCell>
+                        <TableCell>9:00 am</TableCell>
+                        <TableHead className="text-right"><Button>Cancel</Button></TableHead>
+                    </TableRow>
+                </TableBody>
+
             </Table>
 
         </div>

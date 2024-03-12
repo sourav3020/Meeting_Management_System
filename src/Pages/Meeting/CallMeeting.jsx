@@ -36,9 +36,9 @@ const CallMeeting = () => {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-white">
             <div className="w-full max-w-screen-lg p-8 bg-gray-100 shadow-md">
-                <p className="text-center text-black font-inter text-2xl font-bold mb-8">Call a Meeting</p>
+                <p className="text-center text-black  text-2xl font-bold mb-8 font-bangla">Call A Meeting</p>
                 <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center">
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
+                    <div className="grid w-full max-w-sm items-center gap-1.5 font-bangla ">
                         <Label htmlFor="number">Meeting Id</Label>
                         <Input type="number" id="meetingId" placeholder="number" />
                     </div>

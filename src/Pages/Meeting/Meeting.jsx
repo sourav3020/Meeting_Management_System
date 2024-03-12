@@ -1,29 +1,29 @@
-import { Link } from "react-router-dom";
+import { LayoutDashboard } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 
 const Meeting = () => {
     return (
-        <div>
-            <div className="drawer lg:drawer-open">
-                <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-                <div className="drawer-content flex flex-col items-center justify-center">
-                    {/* Page content here */}
-                    <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open drawer</label>
+       <aside className=" bg-gray-200 w-52 col-span-2 h-screen sticky top-0 left-0 overflow-auto p-4 lg:p-5">
+        <nav className="flex flex-col">
+            <NavLink to='/callmeeting' className='p-3 gap-2 bg-gray rounded-md hover:bg-slate-400 hover:text-white transition-all flex items-center' >
+                <LayoutDashboard className="shrink-0"></LayoutDashboard>
+                <span>Call A Meeting</span>
 
-                </div>
-                <div className="drawer-side">
-                    <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-                    <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
-                        {/* Sidebar content here */}
-                        <li><Link to="/callmeeting">Call Meeting</Link></li>
-                        <li><Link to="/generateminutes">Generate Minutes</Link></li>
-                        <li><Link to="/meetinglist">Meeting List</Link></li>
-                    </ul>
+            </NavLink>
+            <NavLink to='/generateminutes' className='p-3 bg-gray rounded-md gap-2 hover:bg-slate-400 hover:text-white transition-all flex items-center' >
+                <LayoutDashboard className="shrink-0"></LayoutDashboard>
+                <span>Gernerate Minutes</span>
 
-                </div>
-            </div>
+            </NavLink>
+            <NavLink to='/profile' className='p-3 bg-gray rounded-md gap-2 hover:bg-slate-400 hover:text-white transition-all flex items-center' >
+                <LayoutDashboard className="shrink-0"></LayoutDashboard>
+                <span>Meeting Profile</span>
 
-        </div>
+            </NavLink>
+
+        </nav>
+       </aside>
     );
 };
 
