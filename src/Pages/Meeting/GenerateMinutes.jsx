@@ -16,9 +16,16 @@ const GenerateMinutes = () => {
     const [agendaTitle, setAgendaTitle] = useState('');
     const [agendaDescription, setAgendaDescription] = useState('');
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Add your form submission logic here
+    };
+
     return (
-        <div className="flex flex-col justify-center items-center">
-            <p className="text-center text-black font-inter text-2xl font-bold mb-8 mt-4">Generate Minutes</p>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+             <div className="w-full max-w-screen-lg p-8 bg-gray-100 shadow-md">
+            <p className="text-center text-black  text-2xl font-bold mb-8 font-bangla">Generate Minutes</p>
+            <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center">
 
             <div className="grid w-full max-w-sm items-center gap-1.5">
                 <Label htmlFor="number">Meeting Id</Label>
@@ -58,6 +65,9 @@ const GenerateMinutes = () => {
             </div>
 
             <Button className='mt-4'>Generate Minutes</Button>
+            </form>
+            </div>
+   
 
         </div>
     );
