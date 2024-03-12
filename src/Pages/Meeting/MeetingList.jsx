@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
     Table,
     TableBody,
@@ -6,38 +5,40 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
-
+} from "@/components/ui/table";
+import { Download } from "lucide-react";
 
 const MeetingList = () => {
     return (
-        <div className="p-6 ">
-             <p className="text-center text-black  text-2xl font-bold mb-8">Meeting List</p>
+        <div className="p-6">
+            <p className="text-center text-black text-2xl font-bold mb-8">Meeting Information</p>
 
             <Table>
-
                 <TableHeader>
                     <TableRow>
                         <TableHead>Meeting Id</TableHead>
                         <TableHead>Meeting Type</TableHead>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Time</TableHead>
-                        <TableHead className="text-right">Cancel Meeting</TableHead>
-
+                        <TableHead>Meeting Held On</TableHead>
+                        <TableHead>Result</TableHead>
+                        <TableHead className="text-right">Download Minutes</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     <TableRow>
-                        <TableCell className="font-medium">845</TableCell>
+                        <TableCell>845</TableCell>
                         <TableCell>Academic</TableCell>
                         <TableCell>24/3/2</TableCell>
-                        <TableCell>9:00 am</TableCell>
-                        <TableCell className="text-right"><Button>Cancel</Button></TableCell>
+                        <TableCell>Result</TableCell>
+                        <TableCell className="text-right">
+                           
+                        <div className="flex items-center justify-end">
+                                <Download />
+                                <span className="ml-2">Download</span>
+                            </div>
+                        </TableCell>
                     </TableRow>
                 </TableBody>
-
             </Table>
-
         </div>
     );
 };

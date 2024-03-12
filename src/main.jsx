@@ -10,7 +10,6 @@ import "./index.css";
 import Meeting from './Pages/Meeting/Meeting';
 import Profile from './Pages/Profile/Profile';
 import CallMeeting from './Pages/Meeting/CallMeeting';
-import MeetingList from './Pages/Meeting/MeetingList';
 import GenerateMinutes from './Pages/Meeting/GenerateMinutes';
 
 const router = createBrowserRouter([
@@ -37,11 +36,7 @@ const router = createBrowserRouter([
       {
         path: "/generateminutes",
         element: <GenerateMinutes></GenerateMinutes>
-      },
-      {
-        path: "/meetinglist",
-        element: <MeetingList></MeetingList>
-      },
+      }
 
     ]
   },
