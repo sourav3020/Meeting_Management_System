@@ -12,7 +12,7 @@ import {
 const MeetingList = () => {
     return (
         <div className="p-6 ">
-             <p className="text-center text-black  text-2xl font-bold mb-8">Meeting Information</p>
+             <p className="text-center text-black  text-2xl font-bold mb-8">Meeting List</p>
 
             <Table>
 
@@ -23,7 +23,6 @@ const MeetingList = () => {
                         <TableHead>Date</TableHead>
                         <TableHead>Time</TableHead>
                         <TableHead className="text-right">Cancel Meeting</TableHead>
-                        
 
                     </TableRow>
                 </TableHeader>
@@ -33,7 +32,7 @@ const MeetingList = () => {
                         <TableCell>Academic</TableCell>
                         <TableCell>24/3/2</TableCell>
                         <TableCell>9:00 am</TableCell>
-                        <TableHead className="text-right"><Button>Cancel</Button></TableHead>
+                        <TableCell className="text-right"><Button>Cancel</Button></TableCell>
                     </TableRow>
                 </TableBody>
 
