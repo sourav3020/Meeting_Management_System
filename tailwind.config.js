@@ -6,7 +6,9 @@ module.exports = {
     './components/**/*.{js,jsx}',
     './app/**/*.{js,jsx}',
     './src/**/*.{js,jsx}',
+    "./src/wels-components//*.{ts,tsx}",
   ],
+  
   prefix: "",
   theme: {
     container: {
@@ -51,6 +53,8 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        
+  
       },
       borderRadius: {
         lg: "var(--radius)",

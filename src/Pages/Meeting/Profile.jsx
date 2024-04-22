@@ -1,5 +1,5 @@
 import { Bell } from "lucide-react";
-import MeetingList from "../Meeting/MeetingList";
+import MeetingList from "./MeetingList";
 import {
     Drawer,
     DrawerClose,

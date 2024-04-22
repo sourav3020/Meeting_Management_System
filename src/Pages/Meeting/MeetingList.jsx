@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
     Table,
     TableBody,
@@ -6,7 +7,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Download } from "lucide-react";
 
 const MeetingList = () => {
     return (
@@ -22,7 +22,7 @@ const MeetingList = () => {
                         <TableHead>Meeting Type</TableHead>
                         <TableHead>Meeting Held On</TableHead>
                         <TableHead>Result</TableHead>
-                        <TableHead className="text-right">Download Minutes</TableHead>
+                        <TableHead className="text-right">Meeting Minutes</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -34,8 +34,8 @@ const MeetingList = () => {
                         <TableCell className="text-right">
                            
                         <div className="flex items-center justify-end">
-                                <Download />
-                                <span className="ml-2">Download</span>
+                        
+                                <Button>See Here</Button>
                             </div>
                         </TableCell>
                     </TableRow>

@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 const Meeting = () => {
     return (
        <aside className=" bg-gray-200 w-52 col-span-2 h-screen sticky top-0 left-0 overflow-auto p-4 lg:p-5">
+        <p className="text-2xl font-extrabold mb-5">Meeting Management</p>
         <nav className="flex flex-col">
             <NavLink to='/callmeeting' className='p-3 gap-2 bg-gray rounded-md hover:bg-slate-400 hover:text-white transition-all flex items-center' >
                 

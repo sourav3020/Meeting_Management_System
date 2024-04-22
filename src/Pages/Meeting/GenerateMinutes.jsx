@@ -6,6 +6,10 @@ import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import Meeting from "./Meeting";
 
+
+
+
+
 const GenerateMinutes = () => {
     const [selectedAttendees, setSelectedAttendees] = useState([]);
     const attendeesOptions = [
@@ -67,10 +71,12 @@ const GenerateMinutes = () => {
                     onChange={(e) => setAgendaDescription(e.target.value)}
                 />
             </div>
+        
 
             <Button className='mt-4'>Generate Minutes</Button>
             </form>
             </div>
+        
    
 
         </div>
