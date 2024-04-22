@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import Meeting from './Meeting';
+
 
 const CallMeeting = () => {
 
@@ -34,6 +36,10 @@ const CallMeeting = () => {
     };
 
     return (
+        <>
+        <div className='flex items-start'>
+            <Meeting></Meeting>
+        
         <div className="flex flex-col items-center justify-center min-h-screen bg-white">
             <div className="w-full max-w-screen-lg p-8 bg-gray-100 shadow-md">
                 <p className="text-center text-black  text-2xl font-bold mb-8 font-bangla">Call A Meeting</p>
@@ -116,6 +122,8 @@ const CallMeeting = () => {
 
             </div>
         </div>
+        </div>
+        </>
     );
 };
 

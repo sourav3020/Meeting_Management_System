@@ -25,7 +25,7 @@ const Header = () => {
 
           {/* Meeting */}
           <NavigationMenuItem className="md:flex">
-            <Link to="/meeting" className="block px-4 py-2  text-sm text-gray-300 hover:bg-gray-700">
+            <Link to="/callmeeting" className="block px-4 py-2  text-sm text-gray-300 hover:bg-gray-700">
               Meeting
             </Link>
           </NavigationMenuItem>

@@ -10,6 +10,8 @@ import { Download } from "lucide-react";
 
 const MeetingList = () => {
     return (
+        <>
+        
         <div className="p-6">
             <p className="text-center text-black text-2xl font-bold mb-8">Meeting Information</p>
 
@@ -40,6 +42,7 @@ const MeetingList = () => {
                 </TableBody>
             </Table>
         </div>
+        </>
     );
 };
 

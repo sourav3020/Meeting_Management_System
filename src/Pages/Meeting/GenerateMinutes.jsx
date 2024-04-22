@@ -4,6 +4,7 @@ import Select from 'react-select';
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
+import Meeting from "./Meeting";
 
 const GenerateMinutes = () => {
     const [selectedAttendees, setSelectedAttendees] = useState([]);
@@ -22,6 +23,9 @@ const GenerateMinutes = () => {
     };
 
     return (
+        <>
+        <div className="flex items-start">
+            <Meeting></Meeting>
         <div className="flex flex-col items-center justify-center min-h-screen bg-white">
              <div className="w-full max-w-screen-lg p-8 bg-gray-100 shadow-md">
             <p className="text-center text-black  text-2xl font-bold mb-8 font-bangla">Generate Minutes</p>
@@ -70,6 +74,8 @@ const GenerateMinutes = () => {
    
 
         </div>
+        </div>
+        </>
     );
 };
 
