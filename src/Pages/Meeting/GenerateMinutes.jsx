@@ -44,10 +44,10 @@ const GenerateMinutes = () => {
 
     return (
         <>
-        <div className="flex items-start">
+        <div className="flex">
             <Meeting></Meeting>
-        <div className="flex flex-col items-center justify-center min-h-screen bg-white">
-             <div className="w-full max-w-screen-lg p-8 bg-gray-100 shadow-md">
+        <div className="flex flex-col  w-full">
+             <div className="w-full  p-8 h-screen shadow-md">
             <p className="text-center text-black  text-2xl font-bold mb-8 font-bangla">Generate Minutes</p>
             <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center">
 
