@@ -47,7 +47,7 @@ const GenerateMinutes = () => {
         <div className="flex">
             <Meeting></Meeting>
         <div className="flex flex-col  w-full">
-             <div className="w-full  p-8 h-screen shadow-md">
+             <div className="w-full  p-8 h-full shadow-md">
             <p className="text-center text-black  text-2xl font-bold mb-8 font-bangla">Generate Minutes</p>
             <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center">
 
