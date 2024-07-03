@@ -141,10 +141,10 @@ const CallMeeting = () => {
   };
 
   return (
-    <div className="flex items-start">
+    <div className="flex ">
       <Meeting />
-      <div className="flex flex-col items-center justify-center min-h-screen bg-white">
-        <div className="w-full max-w-screen-lg p-8 bg-gray-100 shadow-md">
+      <div className=" w-full ">
+        <div className="w-full   p-8   shadow-md">
           <p className="text-center text-black text-2xl font-bold mb-8 font-bangla">
             Call A Meeting
           </p>
@@ -281,7 +281,7 @@ const CallMeeting = () => {
                   lineHeight: "1.25rem",
                   borderRadius: "0.375rem",
                   minHeight: "2.25rem",
-                  marginTop: "6px",
+                  // marginTop: "6px",
                   border: "1px solid var(--color-border, #E4E4E7)",
                   background: "var(--color-bg, #FFF)",
                   boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",

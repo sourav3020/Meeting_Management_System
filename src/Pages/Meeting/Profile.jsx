@@ -11,13 +11,17 @@ import {
     DrawerTrigger,
 } from "@/components/ui/drawer"
 import { Button } from "@/components/ui/button";
+import Meeting from "./Meeting";
 
 
 
 const Profile = () => {
     return (
-        <div>
-            <div className="flex items-center p-4">
+        <div className="flex">
+            <Meeting></Meeting>
+
+        <div className="w-full">
+            <div className="flex items-center  p-4">
                 {/* Profile Image */}
                 <div className="rounded-full overflow-hidden border-2 border-blue-500 w-20 h-20">
                     <img
@@ -61,6 +65,8 @@ const Profile = () => {
 
 
             <MeetingList></MeetingList>
+        </div>
+
         </div>
     );
 };
