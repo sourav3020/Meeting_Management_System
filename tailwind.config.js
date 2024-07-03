@@ -6,9 +6,8 @@ module.exports = {
     './components/**/*.{js,jsx}',
     './app/**/*.{js,jsx}',
     './src/**/*.{js,jsx}',
-    "./src/wels-components//*.{ts,tsx}",
+    "./src/wels-components/*.{ts,tsx}",
   ],
-  
   prefix: "",
   theme: {
     container: {
@@ -53,8 +52,6 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        
-  
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -76,8 +73,8 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       fontFamily: {
+        bangla: ['Noto Sans Bengali', 'Anek Bangla', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
-        bangla: ["Anek Bangla", 'sans-serif'],
       },
     },
   },
