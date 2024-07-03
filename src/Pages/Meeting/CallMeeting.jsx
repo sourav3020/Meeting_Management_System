@@ -17,6 +17,8 @@ const CallMeeting = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedAttendees, setSelectedAttendees] = useState([]);
     const [selectedEmails, setSelectedEmails] = useState([]);
+    const [agendaItems, setAgendaItems] = useState(['']);
+    const [showAddMoreButton, setShowAddMoreButton] = useState(false);
 
     const attendeesOptions = [
         { value: 'teachers', label: 'Teachers' },
@@ -33,6 +35,19 @@ const CallMeeting = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         // Add your form submission logic here
+    };
+    const handleAddAgenda = () => {
+        setAgendaItems([...agendaItems, '']);
+    };
+
+    const handleAgendaChange = (index, value) => {
+        const newAgendaItems = [...agendaItems];
+        newAgendaItems[index] = value;
+        setAgendaItems(newAgendaItems);
+
+        if (index === 0 && value.trim() !== '' && !showAddMoreButton) {
+            setShowAddMoreButton(true);
+        }
     };
 
     return (
@@ -73,9 +88,23 @@ const CallMeeting = () => {
 
                     </div>
                     <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
-                        <Label htmlFor="message">Agenda</Label>
-                        <Textarea placeholder="Subject" id="message" />
-                    </div>
+            <Label htmlFor="message">Agenda</Label>
+            {agendaItems.map((item, index) => (
+                <Textarea
+                    key={index}
+                    placeholder={`Agenda ${index + 1}`}
+                    value={item}
+                    onChange={(e) => handleAgendaChange(index, e.target.value)}
+                    className="mb-2"
+                />
+            ))}
+            {showAddMoreButton && (
+                <Button type="button" onClick={handleAddAgenda} className="mt-2">
+                    Add More 
+                </Button>
+            )}
+        
+                            </div>
                     <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
                         <Label htmlFor="text">Room Name</Label>
                         <Input type="text" id="roomName" placeholder="name" />

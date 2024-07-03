@@ -12,6 +12,8 @@ import Meeting from "./Meeting";
 
 const GenerateMinutes = () => {
     const [selectedAttendees, setSelectedAttendees] = useState([]);
+    const [decisionItems, setDecisionItems] = useState(['']);
+    const [showAddMoreButton, setShowAddMoreButton] = useState(false);
     const attendeesOptions = [
         { value: 'teachers', label: 'Teachers' },
         { value: 'students', label: 'Students' },
@@ -19,7 +21,21 @@ const GenerateMinutes = () => {
     ];
 
     const [agendaTitle, setAgendaTitle] = useState('');
-    const [agendaDescription, setAgendaDescription] = useState('');
+    
+
+    const handleAddDecision = () => {
+        setDecisionItems([...decisionItems, '']);
+    };
+
+    const handleDecisionChange = (index, value) => {
+        const newDecisionItems = [...decisionItems];
+        newDecisionItems[index] = value;
+        setDecisionItems(newDecisionItems);
+
+        if (index === 0 && value.trim() !== '' && !showAddMoreButton) {
+            setShowAddMoreButton(true);
+        }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -61,17 +77,24 @@ const GenerateMinutes = () => {
                     onChange={(e) => setAgendaTitle(e.target.value)}
                 />
             </div>
-
             <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
-                <Label htmlFor="agendaDescription">Decision</Label>
-               <Textarea
-                    placeholder="Decision"
-                    id="agendaDecision"
-                    value={agendaDescription}
-                    onChange={(e) => setAgendaDescription(e.target.value)}
-                />
-            </div>
+                <Label htmlFor="decisions">Decisions</Label>
+                {decisionItems.map((item, index) => (
+                    <Textarea
+                        key={index}
+                        placeholder={`Decision ${index + 1}`}
+                        value={item}
+                        onChange={(e) => handleDecisionChange(index, e.target.value)}
+                        className="mb-2"
+                    />
+                ))}
+           {showAddMoreButton && (
+                <Button type="button" onClick={handleAddDecision} className="mt-2">
+                    Add More 
+                </Button>
+            )}
         
+            </div>
 
             <Button className='mt-4'>Generate Minutes</Button>
             </form>
