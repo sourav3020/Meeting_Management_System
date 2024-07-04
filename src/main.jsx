@@ -6,7 +6,6 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import "./index.css";
-import Meeting from './Pages/Meeting/Meeting';
 import Profile from './Pages/Meeting/Profile';
 import CallMeeting from './Pages/Meeting/CallMeeting';
 import GenerateMinutes from './Pages/Meeting/GenerateMinutes';
@@ -18,7 +17,7 @@ const router = createBrowserRouter([
     children:[
       {
         path: "/",
-        element: <Meeting></Meeting>
+        element: <CallMeeting></CallMeeting>
       },
       {
         path: "/profile",
@@ -32,7 +31,6 @@ const router = createBrowserRouter([
         path: "/generateminutes",
         element: <GenerateMinutes></GenerateMinutes>
       }
-
     ]
   },
 ]);

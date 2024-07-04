@@ -174,7 +174,7 @@ const CallMeeting = () => {
                 className="font-bangla"
               />
             </div>
-            <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
+            <div className="grid w-full max-w-sm items-center gap-1.5 mt-4 ">
               <Label>Date and Time</Label>
               <DateTimePicker
                 onChange={setSelectedDate}
