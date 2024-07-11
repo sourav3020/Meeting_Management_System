@@ -1,42 +1,74 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import Main from './Layout/Main';
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom/client";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import "./index.css";
-import Profile from './Pages/Meeting/Profile';
-import CallMeeting from './Pages/Meeting/CallMeeting';
-import GenerateMinutes from './Pages/Meeting/GenerateMinutes';
+import Main from "./Layout/Main";
+import CallMeeting from "./Pages/Meeting/CallMeeting";
+import GenerateMinutes from "./Pages/Meeting/GenerateMinutes";
+import Profile from "./Pages/Meeting/Profile";
+import Login from "./Pages/login";
+import ProtectedRoute from "./ProtectedRoute";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Main></Main>,
-    children:[
-      {
-        path: "/",
-        element: <CallMeeting></CallMeeting>
-      },
-      {
-        path: "/profile",
-        element: <Profile></Profile>
-      },
-      {
-        path: "/callmeeting",
-        element: <CallMeeting></CallMeeting>
-      },
-      {
-        path: "/generateminutes",
-        element: <GenerateMinutes></GenerateMinutes>
-      }
-    ]
-  },
-]);
+const App = () => {
+  const [authToken, setAuthToken] = useState(localStorage.getItem('authToken'));
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      setAuthToken(token);
+    }
+  }, []);
+
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: authToken ? <Navigate to="/main/callmeeting" /> : <Navigate to="/login" />,
+    },
+    {
+      path: "/login",
+      element: <Login setAuthToken={setAuthToken} />,
+    },
+    {
+      path: "/main",
+      element: <Main />,
+      children: [
+        {
+          path: "callmeeting",
+          element: (
+            <ProtectedRoute>
+              <CallMeeting />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "profile",
+          element: (
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "generateminutes",
+          element: (
+            <ProtectedRoute>
+              <GenerateMinutes />
+            </ProtectedRoute>
+          ),
+        },
+      ],
+    },
+  ]);
+
+  return (
     <RouterProvider router={router} />
-  </React.StrictMode>,
-)
+  );
+};
+
+
+export default App;
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
