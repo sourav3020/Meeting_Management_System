@@ -127,7 +127,7 @@ const MeetingForm = () => {
     }
     // form data to save meeting 
     const formData = {
-      meeting_id: parseInt(meetingId),
+      meeting_id: parseInt(convertBengaliToEnglish(meetingId)),
       meeting_type: meetingType,
       selected_date: selectedDate.toISOString(),
       agenda: agendaItems.map((item, index) => ({
@@ -207,6 +207,23 @@ const MeetingForm = () => {
 
     return convertedNumber;
   }
+
+  function convertBengaliToEnglish(numberString) {
+    const bengaliToEnglishMap = {
+        '০': '0',
+        '১': '1',
+        '২': '2',
+        '৩': '3',
+        '৪': '4',
+        '৫': '5',
+        '৬': '6',
+        '৭': '7',
+        '৮': '8',
+        '৯': '9'
+    };
+
+    return numberString.replace(/[০১২৩৪৫৬৭৮৯]/g, (match) => bengaliToEnglishMap[match]);
+}
 
   return (
     <form
