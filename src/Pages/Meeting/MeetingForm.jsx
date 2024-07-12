@@ -1,16 +1,15 @@
-// src/MeetingForm.js
-import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
-import DateTimePickerField from './DateTimePicker';
-import SelectField from './SelectedField';
+import { useEffect, useState } from "react";
+import DateTimePickerField from "./DateTimePicker";
+import SelectField from "./SelectedField";
 
-const base_url=import.meta.env.VITE_API_URL ;
+const base_url = import.meta.env.VITE_API_URL;
 
-const MeetingForm = ({ handleSubmit }) => {
+const MeetingForm = () => {
   const [meetingId, setMeetingId] = useState("");
   const [meetingType, setMeetingType] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -21,34 +20,59 @@ const MeetingForm = ({ handleSubmit }) => {
   const [emailsOptions, setEmailsOptions] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [showAddMoreButton, setShowAddMoreButton] = useState(false);
+  const [departments, setDepartments] = useState([]);
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
+
+  //fetch all attendee email and user_id 
   useEffect(() => {
     const fetchEmails = async (attendeeTypes) => {
       try {
         const emailResults = await Promise.all(
-          attendeeTypes.map(type => axios.get(`${base_url}/api/${type}`))
+          attendeeTypes.map((type) => axios.get(`${base_url}/api/${type}`))
         );
 
-        const emails = emailResults.flatMap(response =>
-          response.data.data.map(attendee => ({
-            value: attendee.email,
+        const attendees = emailResults.flatMap((response) =>
+          response.data.data.map((attendee) => ({
+            value: attendee.user_id,
+            email: attendee.email,
             label: `${attendee.first_name_bn} ${attendee.last_name_bn} - ${attendee.email}`,
           }))
         );
 
-        setEmailsOptions(emails);
+        setEmailsOptions(attendees);
       } catch (error) {
         console.error("Error fetching emails:", error);
       }
     };
 
     if (selectedAttendees.length > 0) {
-      fetchEmails(selectedAttendees.map(attendee => attendee.value));
+      fetchEmails(selectedAttendees.map((attendee) => attendee.value));
     } else {
       setEmailsOptions([]);
     }
   }, [selectedAttendees]);
 
+  //fetch all department 
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get(`${base_url}/api/department`);
+        const departmentOptions = response.data.data.map((department) => ({
+          value: department.department_id,
+          label: department.department_name,
+        }));
+        setDepartments(departmentOptions);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    };
+
+    fetchDepartments();
+  }, []);
 
   const handleAddAgenda = () => {
     setAgendaItems([...agendaItems, ""]);
@@ -68,23 +92,127 @@ const MeetingForm = ({ handleSubmit }) => {
     setSelectedUsers(selectedOptions || []);
   };
 
-  const handleFormSubmit = (e) => {
+  //handle form submit . 
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
+
+
+    //first upload signature and get signature file name to save it in database 
+    let signatureUrl = "";
+    try {
+      if (signature) {
+        const formData = new FormData();
+        formData.append("image", signature);
+
+        const uploadResponse = await axios.post(
+          `${base_url}/api/upload/image`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        signatureUrl = uploadResponse.data.image.filename;
+        console.log("Signature uploaded:", signatureUrl);
+      }
+    } catch (error) {
+      console.error("Error uploading signature:", error);
+      setSubmitting(false);
+      setSubmitSuccess(false);
+      setSubmitError("Error uploading signature. Please try again.");
+      return; 
+    }
+    // form data to save meeting 
     const formData = {
-      meetingId,
-      meetingType,
-      selectedDate,
-      agendaItems,
-      roomName,
-      signature,
-      selectedAttendees,
-      selectedUsers,
+      meeting_id: parseInt(meetingId),
+      meeting_type: meetingType,
+      selected_date: selectedDate.toISOString(),
+      agenda: agendaItems.map((item, index) => ({
+        topic: `বিষয় ${convertToBengaliNumber(index + 1)}`,
+        description: item,
+        decision: "No decision",
+      })),
+      room_name: roomName,
+      selected_attendees: selectedUsers.map((user) => user.value),
+      department_id: selectedDepartment ? selectedDepartment.value : null,
+      signature_url: signatureUrl, 
     };
-    handleSubmit(formData);
+
+    try {
+      const response = await axios.post(
+        `${base_url}/api/meeting/create-meeting`,
+        formData
+      );
+      console.log("Meeting created:", response.data);
+      setSubmitting(false);
+      setSubmitSuccess(true);
+      setSubmitError(null);
+    
+   
+    //TODO :
+     /*
+    if form submit succes . here create a component to re-direct this page to another new page 
+    and handle create pdf work there and keep a invite button to invite attendee 
+    */
+
+
+    // Clear form fields upon successful submission
+    setMeetingId("");
+    setMeetingType("");
+    setSelectedDate(new Date()); 
+    setAgendaItems([""]); 
+    setRoomName("");
+    setSelectedUsers([]); 
+    setSelectedDepartment(null); 
+    setSignature(null);
+      
+    } catch (error) {
+      console.error("Error creating meeting:", error);
+      setSubmitting(false);
+      setSubmitSuccess(false);
+      setSubmitError("Error creating meeting. Please try again.");
+
+      if (error.response && error.response.status === 400) {
+        setSubmitError("Invalid data provided. Please check your inputs.");
+      } else if (error.response && error.response.status === 500) {
+        setSubmitError("Server error. Please try again later.");
+      } else {
+        setSubmitError("Unexpected error. Please try again.");
+      }
+    }
   };
 
+  // Function to convert English numbers to Bengali
+  function convertToBengaliNumber(number) {
+    const bengaliNumbers = {
+      0: "০",
+      1: "১",
+      2: "২",
+      3: "৩",
+      4: "৪",
+      5: "৫",
+      6: "৬",
+      7: "৭",
+      8: "৮",
+      9: "৯",
+    };
+
+    // Convert each digit in the number to Bengali
+    const convertedNumber = number
+      .toString()
+      .replace(/\d/g, (digit) => bengaliNumbers[digit]);
+
+    return convertedNumber;
+  }
+
   return (
-    <form onSubmit={handleFormSubmit} className="flex flex-col items-center justify-center">
+    <form
+      onSubmit={handleFormSubmit}
+      className="flex flex-col items-center justify-center"
+    >
       <div className="grid w-full max-w-sm items-center gap-1.5 font-bangla">
         <Label htmlFor="meetingId">Meeting Id</Label>
         <Input
@@ -107,7 +235,10 @@ const MeetingForm = ({ handleSubmit }) => {
           className="font-bangla"
         />
       </div>
-      <DateTimePickerField selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+      <DateTimePickerField
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+      />
       <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
         <Label htmlFor="agenda">Agenda</Label>
         {agendaItems.map((item, index) => (
@@ -116,7 +247,7 @@ const MeetingForm = ({ handleSubmit }) => {
             placeholder={`Agenda ${index + 1}`}
             value={item}
             onChange={(e) => handleAgendaChange(index, e.target.value)}
-            className="mb-2"
+            className="mb-2 font-bangla"
           />
         ))}
         {showAddMoreButton && (
@@ -165,7 +296,23 @@ const MeetingForm = ({ handleSubmit }) => {
         value={selectedUsers}
         onChange={handleUserSelect}
       />
-      <Button type="submit" className="mt-8 font-bangla">Submit</Button>
+      <SelectField
+        id="department"
+        label="Select Department"
+        options={departments}
+        value={selectedDepartment}
+        onChange={setSelectedDepartment}
+      />
+      {submitting && <p className="text-blue-500 font-bangla">Submitting...</p>}
+      {submitSuccess && (
+        <p className="text-green-500 font-bangla">
+          Meeting created successfully!
+        </p>
+      )}
+      {submitError && <p className="text-red-500 font-bangla">{submitError}</p>}
+      <Button type="submit" className="mt-8 font-bangla" disabled={submitting}>
+        Submit
+      </Button>
     </form>
   );
 };

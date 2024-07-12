@@ -23,7 +23,7 @@ const Meeting = () => {
 </NavLink>
 <NavLink 
     to='/main/generateminutes' 
-    className={({ isActive }) => 
+    className={({ isActive }) =>
         `p-3 rounded-md gap-2 hover:bg-slate-400 hover:text-white transition-all flex items-center mb-3 ${
             isActive ? 'bg-slate-400 text-white' : 'bg-gray'
         }`

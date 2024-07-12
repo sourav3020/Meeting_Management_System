@@ -1,11 +1,11 @@
 import  { useState } from 'react';
 import axios from 'axios';
 
-const Login = ({ setAuthToken }) => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(''); 
+  const [success, setSuccess] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -13,7 +13,7 @@ const Login = ({ setAuthToken }) => {
       const response = await axios.post('http://bike-csecu.com:5000/api/login', { email, password });
       const token = response.data.session_id;
       localStorage.setItem('authToken', token); // Store token in local storage
-      setAuthToken(token); // Set token in state
+     // setAuthToken(token); // Set token in state
 
       setSuccess('Login successful!');
       
