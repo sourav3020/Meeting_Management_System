@@ -1,4 +1,4 @@
-import { FileText, SquarePen, User } from "lucide-react";
+import { FileText, SquarePen } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {  useLocation } from "react-router-dom";
 
@@ -22,7 +22,7 @@ const Meeting = () => {
     <span>Call A Meeting</span>
 </NavLink>
 <NavLink 
-    to='/generateminutes' 
+    to='/main/generateminutes' 
     className={({ isActive }) => 
         `p-3 rounded-md gap-2 hover:bg-slate-400 hover:text-white transition-all flex items-center mb-3 ${
             isActive ? 'bg-slate-400 text-white' : 'bg-gray'
@@ -33,17 +33,6 @@ const Meeting = () => {
     <span>Generate Minutes</span>
 </NavLink>
 
-<NavLink 
-    to='/profile' 
-    className={({ isActive }) => 
-        `p-3 rounded-md gap-2 hover:bg-slate-400 hover:text-white transition-all flex items-center ${
-            isActive ? 'bg-slate-400 text-white' : 'bg-gray'
-        }`
-    }
->
-    <User className="shrink-0"></User>
-    <span>Meeting Profile</span>
-</NavLink>
 
             </nav>
         </aside>

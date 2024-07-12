@@ -5,7 +5,6 @@ import "./index.css";
 import Main from "./Layout/Main";
 import CallMeeting from "./Pages/Meeting/CallMeeting";
 import GenerateMinutes from "./Pages/Meeting/GenerateMinutes";
-import Profile from "./Pages/Meeting/Profile";
 import Login from "./Pages/login";
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -37,14 +36,6 @@ const App = () => {
           element: (
             <ProtectedRoute>
               <CallMeeting />
-            </ProtectedRoute>
-          ),
-        },
-        {
-          path: "profile",
-          element: (
-            <ProtectedRoute>
-              <Profile />
             </ProtectedRoute>
           ),
         },
