@@ -7,6 +7,7 @@ import CallMeeting from "./Pages/Meeting/CallMeeting";
 import GenerateMinutes from "./Pages/Meeting/GenerateMinutes";
 import Login from "./Pages/login";
 import ProtectedRoute from "./ProtectedRoute";
+import Profile from "./Pages/Meeting/Profile";
 
 const App = () => {
   const [authToken, setAuthToken] = useState(localStorage.getItem('authToken'));
@@ -44,6 +45,14 @@ const App = () => {
           element: (
             <ProtectedRoute>
               <GenerateMinutes />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "profile",
+          element: (
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           ),
         },

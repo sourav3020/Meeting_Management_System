@@ -32,6 +32,17 @@ const Meeting = () => {
     <FileText ></FileText>
     <span>Generate Minutes</span>
 </NavLink>
+<NavLink 
+    to='/main/profile' 
+    className={({ isActive }) => 
+        `p-3 rounded-md gap-2 hover:bg-slate-400 hover:text-white transition-all flex items-center mb-3 ${
+            isActive ? 'bg-slate-400 text-white' : 'bg-gray'
+        }`
+    }
+>
+    <FileText ></FileText>
+    <span>Meeting History</span>
+</NavLink>
 
 
             </nav>
