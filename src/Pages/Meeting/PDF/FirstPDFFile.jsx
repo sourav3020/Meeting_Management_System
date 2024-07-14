@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Document,
   Page,
@@ -45,9 +45,9 @@ const FirstPDFFile = ({ meetingID }) => {
         const response = await fetch(
           `http://bike-csecu.com:5000/api/meeting/meetingInfo/${meetingID}`,
           {
-            method: 'GET',
+            method: "GET",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
           }
         );
@@ -56,7 +56,7 @@ const FirstPDFFile = ({ meetingID }) => {
           setMeetingInfo(data[0]);
         }
       } catch (error) {
-        console.error('Error fetching meeting info:', error);
+        console.error("Error fetching meeting info:", error);
       }
     }
 
@@ -65,9 +65,9 @@ const FirstPDFFile = ({ meetingID }) => {
         const response = await fetch(
           `http://bike-csecu.com:5000/api/meeting/agenda/${meetingID}`,
           {
-            method: 'GET',
+            method: "GET",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
           }
         );
@@ -77,7 +77,7 @@ const FirstPDFFile = ({ meetingID }) => {
           //console.log('Agenda Info:', data);
         }
       } catch (error) {
-        console.error('Error fetching agenda info:', error);
+        console.error("Error fetching agenda info:", error);
       }
     }
 
@@ -86,9 +86,9 @@ const FirstPDFFile = ({ meetingID }) => {
         const response = await fetch(
           `http://bike-csecu.com:5000/api/meeting/attendees/${meetingID}`,
           {
-            method: 'GET',
+            method: "GET",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
           }
         );
@@ -98,7 +98,7 @@ const FirstPDFFile = ({ meetingID }) => {
           //console.log('Attendee Info:', data);
         }
       } catch (error) {
-        console.error('Error fetching attendee info:', error);
+        console.error("Error fetching attendee info:", error);
       }
     }
 
@@ -114,34 +114,34 @@ const FirstPDFFile = ({ meetingID }) => {
     // Function to format date as dd/mm/yyyy
     const formatDate = () => {
       const options = {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        timeZone: 'Asia/Dhaka'
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        timeZone: "Asia/Dhaka",
       };
-      return date.toLocaleDateString('bn-BD', options).replace(/\//g, '/');
+      return date.toLocaleDateString("bn-BD", options).replace(/\//g, "/");
     };
 
     // Function to format time as HH:MM:SS
     const formatTime = () => {
       const options = {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-        timeZone: 'UTC'
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+        timeZone: "Asia/Dhaka",
       };
-      return date.toLocaleTimeString('bn-BD', options);
+      return date.toLocaleTimeString("bn-BD", options);
     };
 
     // Function to get day of the week
     const formatDayOfWeek = () => {
-      return date.toLocaleDateString('bn-BD', { weekday: 'long' });
+      return date.toLocaleDateString("bn-BD", { weekday: "long" });
     };
 
     return {
       date: formatDate,
       time: formatTime,
-      day: formatDayOfWeek
+      day: formatDayOfWeek,
     };
   };
 
@@ -160,29 +160,31 @@ const FirstPDFFile = ({ meetingID }) => {
       9: "৯",
     };
 
-    // Convert each digit in the number to Bengali
+    // Check if number is defined and convert each character to Bengali
     const convertedNumber = number
-      .toString()
-      .replace(/\d/g, (digit) => bengaliNumbers[digit]);
+      ? number.toString().replace(/\d/g, (char) => bengaliNumbers[char])
+      : "";
 
     return convertedNumber;
-  };
+  }
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.section}>
           <View>
-            <Text style={[styles.text, { marginTop: "10px" , fontSize: '12px'}]}>
+            <Text
+              style={[styles.text, { marginTop: "10px", fontSize: "12px" }]}
+            >
               কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং বিভাগ
             </Text>
           </View>
-          <View style={{ marginTop: "18px", border: '1px solid black' }}>
+          <View style={{ marginTop: "18px", border: "1px solid black" }}>
             <Text
               style={{
                 paddingTop: "4px",
                 paddingLeft: "2px",
-                paddingRight: '2px',
+                paddingRight: "2px",
                 fontSize: "7px",
               }}
             >
@@ -196,7 +198,9 @@ const FirstPDFFile = ({ meetingID }) => {
               <Text style={{ fontSize: "8px" }}>
                 চট্টগ্রাম, বাংলাদেশ {"\n"}
               </Text>
-              <Text style={{ fontSize: "8px" }}>তারিখঃ {formatMeetingDateTime(meetingInfo.meeting_time).date()}</Text>
+              <Text style={{ fontSize: "8px" }}>
+                তারিখঃ {formatMeetingDateTime(meetingInfo.meeting_time).date()}
+              </Text>
             </Text>
           </View>
         </View>
@@ -208,9 +212,24 @@ const FirstPDFFile = ({ meetingID }) => {
               marginTop: "30px",
             }}
           >
-            <Text style={{fontSize:'14px', textAlign:'center', textDecoration: 'underline'}}>বিজ্ঞপ্তি</Text>
-            <Text style={{ fontSize: "10px" , marginTop: "5px"}}>
-              সংশ্লিষ্ট  সকলের  অবগতির  জন্য  জানানো  যাচ্ছে  যে,  বিভাগীয়  {meetingInfo.meeting_type}  কমিটির {meetingInfo.meeting_id}তম  সভা  আগামী  {formatMeetingDateTime(meetingInfo.meeting_time).date()} তারিখ,  {formatMeetingDateTime(meetingInfo.meeting_time).day()},  বেলা {formatMeetingDateTime(meetingInfo.meeting_time).time()} ঘটিকায়  বিভাগীয়  {meetingInfo.room_name}  অনুষ্ঠিত হবে  ।  উক্ত  সভায়  সম্মানিত  সদস্যবৃন্দকে  উপস্থিত  থাকার  জন্য  অনুরোধ  করছি ।{"  "}
+            <Text
+              style={{
+                fontSize: "14px",
+                textAlign: "center",
+                textDecoration: "underline",
+              }}
+            >
+              বিজ্ঞপ্তি
+            </Text>
+            <Text style={{ fontSize: "10px", marginTop: "5px" }}>
+              সংশ্লিষ্ট সকলের অবগতির জন্য জানানো যাচ্ছে যে, বিভাগীয়{" "}
+              {meetingInfo.meeting_type} কমিটির{" "}
+              {convertToBengaliNumber(meetingInfo.meeting_id)}তম সভা আগামী{" "}
+              {formatMeetingDateTime(meetingInfo.meeting_time).date()} তারিখ,{" "}
+              {formatMeetingDateTime(meetingInfo.meeting_time).day()}, বেলা{" "}
+              {formatMeetingDateTime(meetingInfo.meeting_time).time()} ঘটিকায়
+              বিভাগীয় {meetingInfo.room_name} অনুষ্ঠিত হবে । উক্ত সভায় সম্মানিত
+              সদস্যবৃন্দকে উপস্থিত থাকার জন্য অনুরোধ করছি ।{"  "}
             </Text>
           </View>
           <View
@@ -221,12 +240,18 @@ const FirstPDFFile = ({ meetingID }) => {
               fontSize: "10px",
             }}
           >
-            <Text style={{fontWeight:'bold', textDecoration: 'underline'}}>আলোচ্যসূচীঃ{'  '}</Text>
-           
+            <Text style={{ fontWeight: "bold", textDecoration: "underline" }}>
+              আলোচ্যসূচীঃ{"  "}
+            </Text>
+
             {agendaInfo.length > 0 ? (
               agendaInfo.map((agenda, index) => (
-                <Text key={agenda.meeting_agenda_id} style={{ textIndent: '2px' }}>
-                  বিষয় {convertToBengaliNumber(index + 1)} : {agenda.description} ।{" "}
+                <Text
+                  key={agenda.meeting_agenda_id}
+                  style={{ textIndent: "2px" }}
+                >
+                  বিষয় {convertToBengaliNumber(index + 1)} :{" "}
+                  {agenda.description} ।{" "}
                 </Text>
               ))
             ) : (
@@ -242,13 +267,13 @@ const FirstPDFFile = ({ meetingID }) => {
               fontSize: "10px",
             }}
           >
-            <Text>
-             ধন্যবাদান্তে{' '}
+            <Text>ধন্যবাদান্তে </Text>
+            <Text style={{ marginTop: "25px" }}>
+              (অধ্যাপক ড. মুহাম্মদ সানাউল্লাহ চৌধুরী){" "}
             </Text>
-            <Text style={{marginTop:'25px'}}>(অধ্যাপক ড. মুহাম্মদ সানাউল্লাহ চৌধুরী) {' '}</Text>
-            <Text>সভাপতি {" "}</Text>
-            <Text>কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং বিভাগ {' '}</Text>
-            <Text>চট্টগ্রাম বিশ্ববিদ্যালয় {' '}</Text>
+            <Text>সভাপতি </Text>
+            <Text>কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং বিভাগ </Text>
+            <Text>চট্টগ্রাম বিশ্ববিদ্যালয় </Text>
           </View>
           <View
             style={{
@@ -258,14 +283,17 @@ const FirstPDFFile = ({ meetingID }) => {
               fontSize: "10px",
             }}
           >
-            <Text>অবগতি ও প্রয়োজনীয় ব্যবস্থা গ্রহণের জন্য অনুলিপি প্রেরিত হলঃ{" "}</Text>
+            <Text>
+              অবগতি ও প্রয়োজনীয় ব্যবস্থা গ্রহণের জন্য অনুলিপি প্রেরিত হলঃ{" "}
+            </Text>
             {attendeeInfo.length > 0 ? (
               attendeeInfo.map((attendee, index) => (
-                <Text key={attendee.user_id} style={{ textIndent: '2px' }}>
-                  {convertToBengaliNumber(index + 1)} । {attendee.first_name} {attendee.last_name} {" "}
+                <Text key={attendee.user_id} style={{ textIndent: "2px" }}>
+                  {convertToBengaliNumber(index + 1)} । {attendee.first_name}{" "}
+                  {attendee.last_name}{" "}
                 </Text>
-              )
-            )): (
+              ))
+            ) : (
               <Text>Loading attendee...</Text>
             )}
           </View>

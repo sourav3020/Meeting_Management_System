@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const SecondPDFFile = ({meetingID}) => {
+const SecondPDFFile = ({ meetingID }) => {
   const [meetingInfo, setMeetingInfo] = useState([]);
   const [agendaInfo, setAgendaInfo] = useState([]);
   const [attendeeInfo, setAttendeeInfo] = useState([]);
@@ -132,8 +132,8 @@ const SecondPDFFile = ({meetingID}) => {
       const options = {
         hour: "2-digit",
         minute: "2-digit",
-        hour12: false,
-        timeZone: "UTC",
+        hour12: true,
+        timeZone: "Asia/Dhaka",
       };
       return date.toLocaleTimeString("bn-BD", options);
     };
@@ -165,10 +165,10 @@ const SecondPDFFile = ({meetingID}) => {
       9: "৯",
     };
 
-    // Convert each digit in the number to Bengali
+    // Check if number is defined and convert each character to Bengali
     const convertedNumber = number
-      .toString()
-      .replace(/\d/g, (digit) => bengaliNumbers[digit]);
+      ? number.toString().replace(/\d/g, (char) => bengaliNumbers[char])
+      : "";
 
     return convertedNumber;
   }
@@ -218,12 +218,12 @@ const SecondPDFFile = ({meetingID}) => {
           >
             <Text style={{ fontSize: "10px" }}>
               কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং বিভাগের{" "}
-              {meetingInfo.meeting_type} কমিটির {meetingInfo.meeting_id}তম সভা
-              অদ্য {formatMeetingDateTime(meetingInfo.meeting_time).date()}{" "}
-              তারিখ, {formatMeetingDateTime(meetingInfo.meeting_time).day()},
-              বেলা {formatMeetingDateTime(meetingInfo.meeting_time).time()}{" "}
-              ঘটিকায় {meetingInfo.room_name} অনুষ্ঠিত হয় । উক্ত সভায় সভাপতিত্ব করেন অত্র বিভাগের সভাপতি অধ্যাপক
-              ড. মুহাম্মদ সানাউল্লাহ চৌধুরী ।{"  "}
+              {meetingInfo.meeting_type} কমিটির{" "}
+              {convertToBengaliNumber(meetingInfo.meeting_id)}তম সভা অদ্য{" "}
+              {formatMeetingDateTime(meetingInfo.meeting_time).date()} তারিখ,{" "}  {formatMeetingDateTime(meetingInfo.meeting_time).day()},  বেলা{" "}
+              {formatMeetingDateTime(meetingInfo.meeting_time).time()} ঘটিকায়{" "}
+              {meetingInfo.room_name} অনুষ্ঠিত হয় । উক্ত সভায় সভাপতিত্ব করেন
+              অত্র  বিভাগের  সভাপতি  অধ্যাপক  ড. মুহাম্মদ  সানাউল্লাহ  চৌধুরী ।{"  "}
             </Text>
           </View>
           <View
@@ -238,8 +238,8 @@ const SecondPDFFile = ({meetingID}) => {
             {attendeeInfo.length > 0 ? (
               attendeeInfo.map((attendee, index) => (
                 <Text key={attendee.user_id} style={{ textIndent: "2px" }}>
-                  {convertToBengaliNumber(index + 1)} । {attendee.first_name}{" "}
-                  {attendee.last_name}{" "}
+                  {convertToBengaliNumber(index + 1)} । {attendee.first_name_bn}{" "}
+                  {attendee.last_name_bn}{" "}
                 </Text>
               ))
             ) : (
@@ -281,7 +281,8 @@ const SecondPDFFile = ({meetingID}) => {
                   style={{ marginBottom: "10px" }}
                 >
                   <Text style={{ textIndent: "2px" }}>
-                    বিষয়  {convertToBengaliNumber(index + 1)} : {agenda.description} ।{" "}
+                    বিষয় {convertToBengaliNumber(index + 1)}  :{" "}
+                    {agenda.description} ।{" "}
                   </Text>
                   <Text style={{ textIndent: "2px" }}>
                     সিদ্ধান্ত {convertToBengaliNumber(index + 1)}:{" "}

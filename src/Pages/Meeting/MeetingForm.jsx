@@ -7,6 +7,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DateTimePickerField from "./DateTimePicker";
 import SelectField from "./SelectedField";
+//import { saveAs } from "file-saver";
+import FirstPDFFile from "./PDF/FirstPDFFile";
+import { pdf } from '@react-pdf/renderer';
+
+
 
 const base_url = import.meta.env.VITE_API_URL;
 
@@ -28,8 +33,7 @@ const MeetingForm = () => {
   const [submitError, setSubmitError] = useState(null);
   const navigate = useNavigate();
 
-
-  //fetch all attendee email and user_id 
+  //fetch all attendee email and user_id
   useEffect(() => {
     const fetchEmails = async (attendeeTypes) => {
       try {
@@ -58,7 +62,7 @@ const MeetingForm = () => {
     }
   }, [selectedAttendees]);
 
-  //fetch all department 
+  //fetch all department
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -94,13 +98,12 @@ const MeetingForm = () => {
     setSelectedUsers(selectedOptions || []);
   };
 
-  //handle form submit . 
+  //handle form submit .
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
 
-
-    //first upload signature and get signature file name to save it in database 
+    //first upload signature and get signature file name to save it in database
     let signatureUrl = "";
     try {
       if (signature) {
@@ -125,9 +128,9 @@ const MeetingForm = () => {
       setSubmitting(false);
       setSubmitSuccess(false);
       setSubmitError("Error uploading signature. Please try again.");
-      return; 
+      return;
     }
-    // form data to save meeting 
+    // form data to save meeting
     const formData = {
       meeting_id: parseInt(convertBengaliToEnglish(meetingId)),
       meeting_type: meetingType,
@@ -140,7 +143,7 @@ const MeetingForm = () => {
       room_name: roomName,
       selected_attendees: selectedUsers.map((user) => user.value),
       department_id: selectedDepartment ? selectedDepartment.value : null,
-      signature_url: signatureUrl, 
+      signature_url: signatureUrl,
     };
 
     try {
@@ -152,26 +155,25 @@ const MeetingForm = () => {
       setSubmitting(false);
       setSubmitSuccess(true);
       setSubmitError(null);
-    
-   
-    //TODO :
-     /*
-    if form submit succes . here create a component to re-direct this page to another new page 
-    and handle create pdf work there and keep a invite button to invite attendee 
-    */
-    navigate(`/main/sendinvitation/${parseInt(convertBengaliToEnglish(meetingId))}`);
+
+      // Generate PDF and save to local storage
+      // const pdfBlob = await generatePDF(formData);
+      // savePdfToLocalStorage(pdfBlob);
+
+      navigate(
+        `/main/sendinvitation/${parseInt(convertBengaliToEnglish(meetingId))}`
+      );
       console.log(meetingId);
 
-    // Clear form fields upon successful submission
-    setMeetingId("");
-    setMeetingType("");
-    setSelectedDate(new Date()); 
-    setAgendaItems([""]); 
-    setRoomName("");
-    setSelectedUsers([]); 
-    setSelectedDepartment(null); 
-    setSignature(null);
-      
+      // Clear form fields upon successful submission
+      setMeetingId("");
+      setMeetingType("");
+      setSelectedDate(new Date());
+      setAgendaItems([""]);
+      setRoomName("");
+      setSelectedUsers([]);
+      setSelectedDepartment(null);
+      setSignature(null);
     } catch (error) {
       console.error("Error creating meeting:", error);
       setSubmitting(false);
@@ -187,6 +189,13 @@ const MeetingForm = () => {
       }
     }
   };
+
+  // Function to generate PDF
+  // const generatePDF = async (meetingId) => {
+  //   // Generate PDF using FirstPDFFile component
+  //   const pdfBlob = await pdf(<FirstPDFFile meetingID={meetingId} />).toBlob();
+  //   return pdfBlob;
+  // };
 
   // Function to convert English numbers to Bengali
   function convertToBengaliNumber(number) {
@@ -213,20 +222,23 @@ const MeetingForm = () => {
 
   function convertBengaliToEnglish(numberString) {
     const bengaliToEnglishMap = {
-        '০': '0',
-        '১': '1',
-        '২': '2',
-        '৩': '3',
-        '৪': '4',
-        '৫': '5',
-        '৬': '6',
-        '৭': '7',
-        '৮': '8',
-        '৯': '9'
+      "০": "0",
+      "১": "1",
+      "২": "2",
+      "৩": "3",
+      "৪": "4",
+      "৫": "5",
+      "৬": "6",
+      "৭": "7",
+      "৮": "8",
+      "৯": "9",
     };
 
-    return numberString.replace(/[০১২৩৪৫৬৭৮৯]/g, (match) => bengaliToEnglishMap[match]);
-}
+    return numberString.replace(
+      /[০১২৩৪৫৬৭৮৯]/g,
+      (match) => bengaliToEnglishMap[match]
+    );
+  }
 
   return (
     <form
