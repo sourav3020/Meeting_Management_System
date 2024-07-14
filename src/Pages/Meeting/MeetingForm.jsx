@@ -69,7 +69,7 @@ const MeetingForm = () => {
         const response = await axios.get(`${base_url}/api/department`);
         const departmentOptions = response.data.data.map((department) => ({
           value: department.department_id,
-          label: department.department_name,
+          label: department.department_name_bn,
         }));
         setDepartments(departmentOptions);
       } catch (error) {
@@ -138,7 +138,7 @@ const MeetingForm = () => {
       agenda: agendaItems.map((item, index) => ({
         topic: `বিষয় ${convertToBengaliNumber(index + 1)}`,
         description: item,
-        decision: "No decision",
+        decision: "",
       })),
       room_name: roomName,
       selected_attendees: selectedUsers.map((user) => user.value),
