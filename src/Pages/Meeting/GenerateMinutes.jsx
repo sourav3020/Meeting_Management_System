@@ -1,5 +1,4 @@
-// GenerateMinutes.jsx
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Select from 'react-select';
@@ -7,8 +6,11 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import Meeting from "./Meeting";
-import { NavLink } from "react-router-dom";
-import PDFViewerPage from "./FirstPDFViewerPage";
+import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
+import SecondPDFFile from "./PDF/SecondPDFFile";
+import axios from "axios";
+
+const base_url = import.meta.env.VITE_API_URL;
 
 const GenerateMinutes = () => {
   const navigate = useNavigate();
@@ -22,8 +24,6 @@ const GenerateMinutes = () => {
     { value: "students", label: "Students" },
     { value: "staffs", label: "Staffs" },
   ];
-
-  const [agendaTitle, setAgendaTitle] = useState("");
 
   const handleAddDecision = () => {
     setAgendaItems([...agendaItems, { topic: "", decision: "" }]);
@@ -56,31 +56,36 @@ const GenerateMinutes = () => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Add your form submission logic here
-  };
-
   const handleGenerateMinutes = async () => {
     // try {
-    //   await Promise.all(
-    //     agendaItems.map((item) =>
-    //       fetch(`http://bike-csecu.com:5000/api/meeting/agenda/${meetingId}`, {
-    //         method: "PUT",
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
-    //         body: JSON.stringify({
-    //           decision: item.decision,
-    //         }),
-    //       })
-    //     )
-    //   );
-      // Navigate to the PDF viewer page
-      navigate(`/main/sendminutes/${meetingId}`);
+    //   // Generate the PDF blob
+    //   const pdfBlob = await SecondPDFFile(meetingId).toBlob();
+
+    //   // Create FormData to upload the PDF
+    //   const formData = new FormData();
+    //   formData.append('file', pdfBlob, 'minutes.pdf');
+
+    //   // Upload the PDF
+    //   const uploadResponse = await axios.post(`${base_url}/api/upload-minutes`, formData, {
+    //     headers: {
+    //       'Content-Type': 'multipart/form-data'
+    //     }
+    //   });
+
+    //   const { filename } = uploadResponse.data;
+
+    //   // Save the minutes to the database
+    //   await axios.post(`${base_url}/api/save-minutes`, {
+    //     meeting_id: meetingId,
+    //     filename,
+    //   });
+
+      
     // } catch (error) {
-    //   console.error("Error updating agenda:", error);
+    //   console.error("Error generating or saving minutes:", error);
     // }
+    // Navigate to the sendminutes page
+    navigate(`/main/sendminutes/${meetingId}`);
   };
 
   return (
@@ -92,10 +97,7 @@ const GenerateMinutes = () => {
             <p className="text-center text-black text-2xl font-bold mb-8 font-bangla">
               Generate Minutes
             </p>
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col items-center justify-center"
-            >
+            <form className="flex flex-col items-center justify-center">
               <div className="grid w-full max-w-sm items-center gap-1.5">
                 <Label htmlFor="meetingId">Meeting Id</Label>
                 <Input
@@ -107,7 +109,6 @@ const GenerateMinutes = () => {
                 />
               </div>
 
-              <div className="grid w-full max-w-sm items-center gap-1.5 mt-4"></div>
               <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
                 {agendaItems.map((item, index) => (
                   <div key={index} className="mb-2">
@@ -143,13 +144,6 @@ const GenerateMinutes = () => {
                 )}
               </div>
               <div>
-                {/* <NavLink
-                  to={`/main/sendminutes/${meetingId}`}
-                  type="button"
-                  className="mt-4 mr-4 bg-slate-700 text-white p-2"
-                >
-                  Send Minutes
-                </NavLink> */}
                 <Button
                   type="button"
                   onClick={handleGenerateMinutes}
