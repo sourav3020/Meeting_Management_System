@@ -18,6 +18,7 @@ const GenerateMinutes = () => {
   const [agendaItems, setAgendaItems] = useState([]);
   const [showAddMoreButton, setShowAddMoreButton] = useState(false);
   const [meetingId, setMeetingId] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const attendeesOptions = [
     { value: "teachers", label: "Teachers" },
@@ -43,7 +44,7 @@ const GenerateMinutes = () => {
     const response = await fetch(`http://bike-csecu.com:5000/api/meeting/agenda/${id}`);
     const data = await response.json();
     setAgendaItems(data.map((item) => ({
-      topic: item.topic,
+      topic: item.description,
       decision: item.decision,
     })));
   };
@@ -57,35 +58,27 @@ const GenerateMinutes = () => {
   };
 
   const handleGenerateMinutes = async () => {
-    // try {
-    //   // Generate the PDF blob
-    //   const pdfBlob = await SecondPDFFile(meetingId).toBlob();
+    const decisions = agendaItems.map(item => item.decision);
 
-    //   // Create FormData to upload the PDF
-    //   const formData = new FormData();
-    //   formData.append('file', pdfBlob, 'minutes.pdf');
+    try {
+      const response = await fetch(`http://bike-csecu.com:5000/api/meeting/save-decisions/${meetingId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ decisions }),
+      });
 
-    //   // Upload the PDF
-    //   const uploadResponse = await axios.post(`${base_url}/api/upload-minutes`, formData, {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data'
-    //     }
-    //   });
-
-    //   const { filename } = uploadResponse.data;
-
-    //   // Save the minutes to the database
-    //   await axios.post(`${base_url}/api/save-minutes`, {
-    //     meeting_id: meetingId,
-    //     filename,
-    //   });
-
-      
-    // } catch (error) {
-    //   console.error("Error generating or saving minutes:", error);
-    // }
-    // Navigate to the sendminutes page
-    navigate(`/main/sendminutes/${meetingId}`);
+      if (response.ok) {
+        // Navigate to the PDF viewer page
+        navigate(`/main/sendminutes/${meetingId}`);
+      } else {
+        const errorData = await response.json();
+        setErrorMessage(`Failed to save decisions: ${errorData.message}`);
+      }
+    } catch (error) {
+      setErrorMessage(`Error saving decisions: ${error.message}`);
+    }
   };
 
   return (
@@ -153,6 +146,9 @@ const GenerateMinutes = () => {
                 </Button>
               </div>
             </form>
+            {errorMessage && (
+              <p className="text-red-500 mt-4">{errorMessage}</p>
+            )}
           </div>
         </div>
       </div>
