@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DateTimePickerField from "./DateTimePicker";
 import SelectField from "./SelectedField";
 
@@ -25,6 +26,7 @@ const MeetingForm = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+  const navigate = useNavigate();
 
 
   //fetch all attendee email and user_id 
@@ -157,7 +159,8 @@ const MeetingForm = () => {
     if form submit succes . here create a component to re-direct this page to another new page 
     and handle create pdf work there and keep a invite button to invite attendee 
     */
-
+    navigate(`/main/sendinvitation/${parseInt(convertBengaliToEnglish(meetingId))}`);
+      console.log(meetingId);
 
     // Clear form fields upon successful submission
     setMeetingId("");

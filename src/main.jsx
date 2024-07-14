@@ -8,6 +8,13 @@ import GenerateMinutes from "./Pages/Meeting/GenerateMinutes";
 import Login from "./Pages/login";
 import ProtectedRoute from "./ProtectedRoute";
 import Profile from "./Pages/Meeting/Profile";
+import SendMinutes from "./Pages/Meeting/SendMinutes";
+import SecondPDFFile from "./Pages/Meeting/PDF/SecondPDFFile";
+import FirstPDFFile from "./Pages/Meeting/PDF/FirstPDFFile";
+import { PDFViewer } from "@react-pdf/renderer";
+import FirstPDFViewerPage from "./Pages/Meeting/FirstPDFViewerPage";
+import SecondPDFViewerPage from "./Pages/Meeting/SecondPDFViewerPage";
+import SendInvitation from "./Pages/Meeting/SendInvitation";
 
 const App = () => {
   const [authToken, setAuthToken] = useState(localStorage.getItem('authToken'));
@@ -49,12 +56,45 @@ const App = () => {
           ),
         },
         {
+          path: `secondpdf-viewer/:meetingId`,
+          element: (
+            <ProtectedRoute>
+              <SecondPDFViewerPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: `firstpdf-viewer/:meetingId`,
+          element: (
+            <ProtectedRoute>
+              <FirstPDFViewerPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: `sendminutes/:id`,
+          element: (
+            <ProtectedRoute>
+              <SendMinutes />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: `sendinvitation/:id`,
+          element: (
+            <ProtectedRoute>
+              <SendInvitation />
+            </ProtectedRoute>
+          ),
+        },
+        {
           path: "profile",
           element: (
             <ProtectedRoute>
               <Profile />
             </ProtectedRoute>
           ),
+          
         },
       ],
     },
