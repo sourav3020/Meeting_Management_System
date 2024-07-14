@@ -176,7 +176,7 @@ const FirstPDFFile = ({ meetingID }) => {
             <Text
               style={[styles.text, { marginTop: "10px", fontSize: "12px" }]}
             >
-              কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং বিভাগ
+              {meetingInfo.department_name_bn} বিভাগ
             </Text>
           </View>
           <View style={{ marginTop: "18px", border: "1px solid black" }}>
@@ -224,11 +224,11 @@ const FirstPDFFile = ({ meetingID }) => {
             <Text style={{ fontSize: "10px", marginTop: "5px" }}>
               সংশ্লিষ্ট সকলের অবগতির জন্য জানানো যাচ্ছে যে, বিভাগীয়{" "}
               {meetingInfo.meeting_type} কমিটির{" "}
-              {convertToBengaliNumber(meetingInfo.meeting_id)}তম সভা আগামী{" "}
-              {formatMeetingDateTime(meetingInfo.meeting_time).date()} তারিখ,{" "}
-              {formatMeetingDateTime(meetingInfo.meeting_time).day()}, বেলা{" "}
-              {formatMeetingDateTime(meetingInfo.meeting_time).time()} ঘটিকায়
-              বিভাগীয় {meetingInfo.room_name} অনুষ্ঠিত হবে । উক্ত সভায় সম্মানিত
+              {convertToBengaliNumber(meetingInfo.meeting_id)}তম সভা আগামী{" "} 
+              {formatMeetingDateTime(meetingInfo.meeting_time).date()} তারিখ,{" "} 
+              {formatMeetingDateTime(meetingInfo.meeting_time).day()}, বেলা{" "} 
+              {formatMeetingDateTime(meetingInfo.meeting_time).time()} ঘটিকায় 
+              বিভাগীয় {meetingInfo.room_name} অনুষ্ঠিত হবে । উক্ত সভায় সম্মানিত 
               সদস্যবৃন্দকে উপস্থিত থাকার জন্য অনুরোধ করছি ।{"  "}
             </Text>
           </View>
@@ -289,8 +289,8 @@ const FirstPDFFile = ({ meetingID }) => {
             {attendeeInfo.length > 0 ? (
               attendeeInfo.map((attendee, index) => (
                 <Text key={attendee.user_id} style={{ textIndent: "2px" }}>
-                  {convertToBengaliNumber(index + 1)} । {attendee.first_name}{" "}
-                  {attendee.last_name}{" "}
+                  {convertToBengaliNumber(index + 1)} । {attendee.first_name_bn}{" "}
+                  {attendee.last_name_bn}{" "}
                 </Text>
               ))
             ) : (
