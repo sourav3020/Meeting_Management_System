@@ -8,10 +8,6 @@ import { useNavigate } from "react-router-dom";
 import DateTimePickerField from "./DateTimePicker";
 import SelectField from "./SelectedField";
 //import { saveAs } from "file-saver";
-import FirstPDFFile from "./PDF/FirstPDFFile";
-import { pdf } from '@react-pdf/renderer';
-
-
 
 const base_url = import.meta.env.VITE_API_URL;
 
@@ -38,7 +34,19 @@ const MeetingForm = () => {
     const fetchEmails = async (attendeeTypes) => {
       try {
         const emailResults = await Promise.all(
-          attendeeTypes.map((type) => axios.get(`${base_url}/api/${type}`))
+          attendeeTypes.map((type) => {
+            const config = {
+              headers: {}
+            };
+            console.log(type);
+            if (type === 'student') {
+              // Add your token logic here
+              const token = "fba7b5c2-427a-11ef-88f4-3c5282764ceb"; 
+              config.headers.Authorization = `Bearer ${token}`;
+            }
+            
+            return axios.get(`${base_url}/api/${type}?page=2`, config);
+          })
         );
 
         const attendees = emailResults.flatMap((response) =>
@@ -160,10 +168,11 @@ const MeetingForm = () => {
       // const pdfBlob = await generatePDF(formData);
       // savePdfToLocalStorage(pdfBlob);
 
-      navigate(
-        `/main/sendinvitation/${parseInt(convertBengaliToEnglish(meetingId))}`
-      );
-      console.log(meetingId);
+      setTimeout(() => {
+        navigate(
+          `/main/sendinvitation/${parseInt(convertBengaliToEnglish(meetingId))}`
+        );
+      }, 2000);
 
       // Clear form fields upon successful submission
       setMeetingId("");

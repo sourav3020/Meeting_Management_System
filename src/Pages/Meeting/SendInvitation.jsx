@@ -1,50 +1,136 @@
 import { Button } from "@/components/ui/button";
-import Select from "react-select";
 import { Label } from "@/components/ui/label";
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import Modal from "@/components/ui/Modal";
+import Notification from "@/components/ui/Notification";
+import Spinner from "@/components/ui/Spinner";
+import { useEffect, useState } from "react";
+import { createRoot } from "react-dom/client";
+import { useNavigate, useParams } from "react-router-dom";
+import Select from "react-select";
 import Meeting from "./Meeting";
+import SaveInvitation from "./PDF/SaveInvitation";
+
+const base_url = import.meta.env.VITE_API_URL;
 
 const SendInvitation = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [selectedAttendees, setSelectedAttendees] = useState([]);
   const [attendeesOptions, setAttendeesOptions] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     fetchAttendees(id);
   }, [id]);
 
   const fetchAttendees = async (id) => {
-    const response = await fetch(
-      `http://bike-csecu.com:5000/api/meeting/attendees/${id}`
-    );
-    const data = await response.json();
-    const options = data.map((attendee) => ({
-      value: attendee.email,
-      label: `${attendee.first_name} ${attendee.last_name}`,
-    }));
-    setAttendeesOptions(options);
+    try {
+      setLoading(true);
+      const response = await fetch(`${base_url}/api/meeting/attendees/${id}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch attendees");
+      }
+      const data = await response.json();
+      const options = data.map((attendee) => ({
+        value: attendee.email,
+        label: `${attendee.first_name_bn} ${attendee.last_name_bn}`,
+      }));
+      setAttendeesOptions(options);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const sendEmails = async () => {
-    const emails = selectedAttendees.map((attendee) => attendee.value);
-    // Add your logic to send emails to the selected attendees here
-    console.log("Sending emails to:", emails);
-    // Example: send email request to your backend
-    // await fetch('/api/send-emails', {
-    //     method: 'POST',
-    //     body: JSON.stringify({ emails }),
-    // });
+    try {
+      setLoading(true);
+      // Generate PDF
+      const base64data = await generateAndSavePDF(id);
+
+      // Send emails to selected attendees
+      const selectedEmails = selectedAttendees.map(
+        (attendee) => attendee.value
+      );
+      const subject = "Invitation to Upcoming Meeting";
+      const body = `
+Dear Sir,
+
+You are cordially invited to attend our upcoming meeting. Please find the attached agenda and additional details.
+
+Best regards,
+Meeting Management Team
+University of Chittagong
+`;
+      const response = await fetch(`${base_url}/api/meeting/send-email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          meeting_id: id,
+          subject: subject,
+          body: body,
+          to_email: selectedEmails,
+          attachment: base64data,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send emails");
+      }
+
+      const responseData = await response.json();
+      setSuccessMessage("Invitations sent successfully!");
+    } catch (error) {
+      setError("Failed to send invitations.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const generateAndSavePDF = async (meetingId) => {
+    return new Promise((resolve, reject) => {
+      const onComplete = (base64data) => {
+        resolve(base64data);
+      };
+
+      const onError = (error) => {
+        reject(error);
+      };
+
+      const container = document.createElement("div");
+      container.style.display = "none"; // Hide the container
+      document.body.appendChild(container);
+
+      const root = createRoot(container);
+      root.render(
+        <SaveInvitation
+          meetingID={meetingId}
+          onComplete={onComplete}
+          onError={onError}
+        />
+      );
+
+      setTimeout(() => {
+        root.unmount();
+        document.body.removeChild(container);
+      }, 2000);
+    });
   };
 
   const openFirstPDFViewer = () => {
-    window.open(`/main/firstpdf-viewer/${id}`);
+    navigate(`/main/firstpdf-viewer/${id}`);
   };
 
   return (
     <div className="flex">
       <Meeting />
-      <div className="w-full flex flex-col items-center justify-center gap-4 mt-8 p-4  rounded-lg  bg-white">
+      <div className="w-full flex flex-col items-center justify-center gap-4 mt-8 p-4 rounded-lg bg-white">
         <Label htmlFor="text" className="text-lg font-semibold text-gray-700">
           Send to
         </Label>
@@ -73,6 +159,12 @@ const SendInvitation = () => {
         >
           View Invitation
         </Button>
+
+        {successMessage && (
+          <Notification type="success" message={successMessage} />
+        )}
+        {error && <Modal type="error" message={error} />}
+        {loading && <Spinner />}
       </div>
     </div>
   );
