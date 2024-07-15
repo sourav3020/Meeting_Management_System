@@ -7,20 +7,22 @@ const Login = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  const base_url = import.meta.env.VITE_API_URL;
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://bike-csecu.com:5000/api/login', { email, password });
+      const response = await axios.post(`${base_url}/api/login`, { email, password });
       const token = response.data.session_id;
-      localStorage.setItem('authToken', token); // Store token in local storage
-     // setAuthToken(token); // Set token in state
+      localStorage.setItem('authToken', token); 
+       //setAuthToken(token); // Set token in state
 
       setSuccess('Login successful!');
       
       // Redirect to the CallMeeting page 
       setTimeout(() => {
         window.location.href = '/main/callmeeting';
-      }, 2000);
+      }, 1000);
     } catch (error) {
       setError('Invalid email or password');
       console.error('Error logging in:', error);

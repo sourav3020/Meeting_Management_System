@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import {
   Document,
   Page,
@@ -12,6 +12,8 @@ import thin from "../../../assets/fonts/TiroBangla-Regular.ttf";
 
 Font.register({ family: "TiroBangla", fonts: [{ src: thin }] });
 // Font.register({ family: "Kalpurush", fonts: [{ src: Kalpurush }] });
+
+const base_url = import.meta.env.VITE_API_URL;
 
 const styles = StyleSheet.create({
   page: {
@@ -29,8 +31,8 @@ const styles = StyleSheet.create({
     lineHeight: "1.5",
   },
   text: {
-    // Adjust the spacing between words as needed
-    lineHeight: "1.5", // Adjust the line height for spacing between lines
+   
+    lineHeight: "1.5", 
   },
 });
 
@@ -43,7 +45,7 @@ const FirstPDFFile = ({ meetingID }) => {
     async function fetchMeetingInfo() {
       try {
         const response = await fetch(
-          `http://bike-csecu.com:5000/api/meeting/meetingInfo/${meetingID}`,
+          `${base_url}/api/meeting/meetingInfo/${meetingID}`,
           {
             method: "GET",
             headers: {
@@ -63,7 +65,7 @@ const FirstPDFFile = ({ meetingID }) => {
     async function fetchAgendaInfo() {
       try {
         const response = await fetch(
-          `http://bike-csecu.com:5000/api/meeting/agenda/${meetingID}`,
+          `${base_url}/api/meeting/agenda/${meetingID}`,
           {
             method: "GET",
             headers: {
@@ -84,7 +86,7 @@ const FirstPDFFile = ({ meetingID }) => {
     async function fetchAttendeeInfo() {
       try {
         const response = await fetch(
-          `http://bike-csecu.com:5000/api/meeting/attendees/${meetingID}`,
+          `${base_url}/api/meeting/attendees/${meetingID}`,
           {
             method: "GET",
             headers: {
