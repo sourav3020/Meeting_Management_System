@@ -94,7 +94,7 @@ const GenerateMinutes = () => {
               <div className="grid w-full max-w-sm items-center gap-1.5">
                 <Label htmlFor="meetingId">Meeting Id</Label>
                 <Input
-                  type="number"
+                  type="text"
                   id="meetingId"
                   placeholder="number"
                   value={meetingId}
