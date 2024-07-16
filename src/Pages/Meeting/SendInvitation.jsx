@@ -124,7 +124,7 @@ University of Chittagong
   };
 
   const openFirstPDFViewer = () => {
-    navigate(`/main/firstpdf-viewer/${id}`);
+    window.open(`/main/firstpdf-viewer/${id}`);
   };
 
   return (
