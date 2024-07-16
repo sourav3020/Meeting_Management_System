@@ -168,7 +168,33 @@ const FirstPDFFile = ({ meetingID }) => {
       : "";
 
     return convertedNumber;
-  }
+  };
+
+  const formatAttendeeName = (attendee) => {
+    const { title_bn, first_name_bn, last_name_bn, designation_bn } = attendee;
+
+    let name = "";
+    if (designation_bn === "অধ্যাপক" && designation_bn) {
+      name += designation_bn + " ";
+    }
+    if (title_bn) {
+      name += title_bn + " ";
+    }
+    name += first_name_bn + " " + last_name_bn;
+    if (designation_bn !== "অধ্যাপক" && designation_bn) {
+      name += " " + designation_bn;
+    }
+    return name;
+  };
+
+  const formatFullAttendeeName = (attendee) => {
+    let formattedName = formatAttendeeName(attendee);
+    if (meetingInfo.department_name_bn === "কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং") {
+      formattedName += " সিএসই বিভাগ";
+    }
+    return formattedName;
+  };
+
 
   return (
     <Document>
@@ -291,8 +317,8 @@ const FirstPDFFile = ({ meetingID }) => {
             {attendeeInfo.length > 0 ? (
               attendeeInfo.map((attendee, index) => (
                 <Text key={attendee.user_id} style={{ textIndent: "2px" }}>
-                  {convertToBengaliNumber(index + 1)} । {attendee.first_name_bn}{" "}
-                  {attendee.last_name_bn}{" "}
+                  {convertToBengaliNumber(index + 1)} ।
+                  {formatFullAttendeeName(attendee)}, চ.বি.{" "}
                 </Text>
               ))
             ) : (

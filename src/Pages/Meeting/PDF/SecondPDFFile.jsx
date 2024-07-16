@@ -32,8 +32,7 @@ const styles = StyleSheet.create({
     lineHeight: "1.5",
   },
   text: {
-    // Adjust the spacing between words as needed
-    lineHeight: "1.5", // Adjust the line height for spacing between lines
+    lineHeight: "1.5",
   },
 });
 
@@ -41,8 +40,6 @@ const SecondPDFFile = ({ meetingID }) => {
   const [meetingInfo, setMeetingInfo] = useState([]);
   const [agendaInfo, setAgendaInfo] = useState([]);
   const [attendeeInfo, setAttendeeInfo] = useState([]);
-
-  // const { meetingID } = useParams();
 
   useEffect(() => {
     async function fetchMeetingInfo() {
@@ -173,6 +170,33 @@ const SecondPDFFile = ({ meetingID }) => {
     return convertedNumber;
   }
 
+  const formatAttendeeName = (attendee) => {
+    const { title_bn, first_name_bn, last_name_bn, designation_bn } = attendee;
+
+    let name = "";
+    if (designation_bn === "অধ্যাপক" && designation_bn) {
+      name += designation_bn + " ";
+    }
+    if (title_bn) {
+      name += title_bn + " ";
+    }
+    name += first_name_bn + " " + last_name_bn + ", ";
+    if (designation_bn !== "অধ্যাপক" && designation_bn) {
+      name += designation_bn + ", ";
+    }
+    return name;
+  };
+
+  const formatFullAttendeeName = (attendee) => {
+    let formattedName = formatAttendeeName(attendee);
+    if (
+      meetingInfo.department_name_bn === "কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং"
+    ) {
+      formattedName += "সিএসই বিভাগ";
+    }
+    return formattedName;
+  };
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -181,7 +205,7 @@ const SecondPDFFile = ({ meetingID }) => {
             <Text
               style={[styles.text, { marginTop: "10px", fontSize: "12px" }]}
             >
-              কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং বিভাগ
+              {meetingInfo.department_name_bn} বিভাগ
             </Text>
           </View>
           <View style={{ marginTop: "18px", border: "1px solid black" }}>
@@ -217,13 +241,14 @@ const SecondPDFFile = ({ meetingID }) => {
             }}
           >
             <Text style={{ fontSize: "10px" }}>
-              কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং বিভাগের{" "}
+              {meetingInfo.department_name_bn} বিভাগের{" "}
               {meetingInfo.meeting_type} কমিটির{" "}
               {convertToBengaliNumber(meetingInfo.meeting_id)}তম সভা অদ্য{" "}
-              {formatMeetingDateTime(meetingInfo.meeting_time).date()} তারিখ,{" "}  {formatMeetingDateTime(meetingInfo.meeting_time).day()},  বেলা{" "}
+              {formatMeetingDateTime(meetingInfo.meeting_time).date()} তারিখ,{" "}
+              {formatMeetingDateTime(meetingInfo.meeting_time).day()}, বেলা{" "}
               {formatMeetingDateTime(meetingInfo.meeting_time).time()} ঘটিকায়{" "}
               {meetingInfo.room_name} অনুষ্ঠিত হয় । উক্ত সভায় সভাপতিত্ব করেন
-              অত্র  বিভাগের  সভাপতি  অধ্যাপক  ড. মুহাম্মদ  সানাউল্লাহ  চৌধুরী ।{"  "}
+              অত্র বিভাগের সভাপতি অধ্যাপক ড. মুহাম্মদ সানাউল্লাহ চৌধুরী ।{"  "}
             </Text>
           </View>
           <View
@@ -238,33 +263,14 @@ const SecondPDFFile = ({ meetingID }) => {
             {attendeeInfo.length > 0 ? (
               attendeeInfo.map((attendee, index) => (
                 <Text key={attendee.user_id} style={{ textIndent: "2px" }}>
-                  {convertToBengaliNumber(index + 1)} । {attendee.first_name_bn}{" "}
-                  {attendee.last_name_bn}{" "}
+                  {convertToBengaliNumber(index + 1)} ।{" "}
+                  {formatFullAttendeeName(attendee)}, চ.বি.{" "}
                 </Text>
               ))
             ) : (
               <Text>Loading agenda...</Text>
             )}
           </View>
-
-          {/* <View
-            style={{
-              paddingLeft: "50px",
-              paddingRight: "30px",
-              marginTop: "14px",
-              fontSize: "10px",
-            }}
-          >
-            <Text>
-              সভায় নিম্নলিখিত সদস্যবৃন্দ অনলাইনে উপস্থিত থেকে সম্মতি জ্ঞাপন
-              করেনঃ
-            </Text>
-            <Text>১। অধ্যাপক মোঃ সানাউল্লাহ চৌধুরী, সিএসই বিভাগ, চ.বি. {' '}</Text>
-            <Text>১। অধ্যাপক মোঃ সানাউল্লাহ চৌধুরী, সিএসই বিভাগ, চ.বি. {" "}</Text>
-            <Text>১। অধ্যাপক মোঃ সানাউল্লাহ চৌধুরী, সিএসই বিভাগ, চ.বি. {' '}</Text>
-            <Text>১। অধ্যাপক মোঃ সানাউল্লাহ চৌধুরী, সিএসই বিভাগ, চ.বি. {' '}</Text>
-            <Text>১। অধ্যাপক মোঃ সানাউল্লাহ চৌধুরী, সিএসই বিভাগ, চ.বি. {' '}</Text>
-          </View> */}
           <View
             style={{
               paddingLeft: "50px",
@@ -281,7 +287,7 @@ const SecondPDFFile = ({ meetingID }) => {
                   style={{ marginBottom: "10px" }}
                 >
                   <Text style={{ textIndent: "2px" }}>
-                    বিষয় {convertToBengaliNumber(index + 1)}  :{" "}
+                    বিষয় {convertToBengaliNumber(index + 1)} :{" "}
                     {agenda.description} ।{" "}
                   </Text>
                   <Text style={{ textIndent: "2px" }}>
