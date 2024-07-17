@@ -1,20 +1,20 @@
 import { Button } from "@/components/ui/button";
-import Select from "react-select";
 import { Label } from "@/components/ui/label";
 import Modal from "@/components/ui/Modal";
 import Notification from "@/components/ui/Notification";
 import Spinner from "@/components/ui/Spinner";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createRoot } from "react-dom/client";
 import { useParams } from "react-router-dom";
+import Select from "react-select";
 import Meeting from "./Meeting";
 import SaveMinutes from "./PDF/SaveMinutes";
-
 
 const base_url = import.meta.env.VITE_API_URL;
 
 const SendMinutes = () => {
   const { id } = useParams();
-  
+
   const [selectedAttendees, setSelectedAttendees] = useState([]);
   const [attendeesOptions, setAttendeesOptions] = useState([]);
   const [error, setError] = useState(null);
@@ -44,7 +44,6 @@ const SendMinutes = () => {
       setLoading(false);
     }
   };
-
 
   const sendEmails = async () => {
     try {
@@ -83,8 +82,8 @@ University of Chittagong
       if (!response.ok) {
         throw new Error("Failed to send emails");
       }
-
-      const responseData = await response.json();
+      setSelectedAttendees([]);
+      //const responseData = await response.json();
       setSuccessMessage("Minutes sent successfully!");
     } catch (error) {
       setError("Failed to send minutes.");
