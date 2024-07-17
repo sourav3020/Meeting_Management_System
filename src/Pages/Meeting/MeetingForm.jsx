@@ -150,6 +150,12 @@ const MeetingForm = () => {
     }
   };
 
+  const handleRemoveAgenda = (index) => {
+    const newAgendaItems = [...agendaItems];
+    newAgendaItems.splice(index, 1);
+    setAgendaItems(newAgendaItems);
+  };
+
   const handleUserSelect = (selectedOptions) => {
     setSelectedUsers(selectedOptions || []);
   };
@@ -243,12 +249,7 @@ const MeetingForm = () => {
     }
   };
 
-  // Function to generate PDF
-  // const generatePDF = async (meetingId) => {
-  //   // Generate PDF using FirstPDFFile component
-  //   const pdfBlob = await pdf(<FirstPDFFile meetingID={meetingId} />).toBlob();
-  //   return pdfBlob;
-  // };
+
 
   // Function to convert English numbers to Bengali
   function convertToBengaliNumber(number) {
