@@ -84,7 +84,7 @@ University of Chittagong
         throw new Error("Failed to send emails");
       }
 
-      const responseData = await response.json();
+      //const responseData = await response.json();
       setSuccessMessage("Invitations sent successfully!");
     } catch (error) {
       setError("Failed to send invitations.");
@@ -124,7 +124,7 @@ University of Chittagong
   };
 
   const openFirstPDFViewer = () => {
-    window.open(`/main/firstpdf-viewer/${id}`);
+    navigate(`/main/firstpdf-viewer/${id}`);
   };
 
   return (

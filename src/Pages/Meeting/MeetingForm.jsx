@@ -30,39 +30,65 @@ const MeetingForm = () => {
   const navigate = useNavigate();
 
   //fetch all attendee email and user_id
-  useEffect(() => {
-    const fetchEmails = async (attendeeTypes) => {
+
+  const fetchEmails = async (attendeeTypes) => {
+    const fetchAllPages = async (type, page = 1, accumulatedData = []) => {
       try {
-        const emailResults = await Promise.all(
-          attendeeTypes.map((type) => {
-            const config = {
-              headers: {}
-            };
-            console.log(type);
-            if (type === 'student') {
-              // Add your token logic here
-              const token = "fba7b5c2-427a-11ef-88f4-3c5282764ceb"; 
-              config.headers.Authorization = `Bearer ${token}`;
-            }
-            
-            return axios.get(`${base_url}/api/${type}?page=2`, config);
-          })
-        );
+        const config = {
+          headers: {},
+        };
 
-        const attendees = emailResults.flatMap((response) =>
-          response.data.data.map((attendee) => ({
-            value: attendee.user_id,
-            email: attendee.email,
-            label: `${attendee.first_name_bn} ${attendee.last_name_bn} - ${attendee.email}`,
-          }))
-        );
+        if (type === "student") {
+          const token = "fba7b5c2-427a-11ef-88f4-3c5282764ceb";
+          config.headers.Authorization = `Bearer ${token}`;
+        }
 
-        setEmailsOptions(attendees);
+        const response = await axios.get(
+          `${base_url}/api/${type}?page=${page}`,
+          config
+        );
+        const data = response.data.data;
+        // const totalRecords = response.data.total_records;
+
+        // Accumulate data
+        const newData = [...accumulatedData, ...data];
+
+        // Check if there are more pages
+        if (response.data.next) {
+          // Recursively fetch the next page
+          return fetchAllPages(type, response.data.next.page, newData);
+        } else {
+          return newData;
+        }
       } catch (error) {
-        console.error("Error fetching emails:", error);
+        console.error(
+          `Error fetching data for ${type} on page ${page}:`,
+          error
+        );
+        return accumulatedData;
       }
     };
 
+    try {
+      const emailResults = await Promise.all(
+        attendeeTypes.map((type) => fetchAllPages(type))
+      );
+
+      const attendees = emailResults.flatMap((data) =>
+        data.map((attendee) => ({
+          value: attendee.user_id,
+          email: attendee.email,
+          label: `${attendee.first_name_bn} ${attendee.last_name_bn} - ${attendee.email}`,
+        }))
+      );
+
+      setEmailsOptions(attendees);
+    } catch (error) {
+      console.error("Error fetching emails:", error);
+    }
+  };
+
+  useEffect(() => {
     if (selectedAttendees.length > 0) {
       fetchEmails(selectedAttendees.map((attendee) => attendee.value));
     } else {
@@ -71,20 +97,42 @@ const MeetingForm = () => {
   }, [selectedAttendees]);
 
   //fetch all department
-  useEffect(() => {
-    const fetchDepartments = async () => {
+  const fetchDepartments = async () => {
+    const fetchAllPages = async (page = 1, accumulatedData = []) => {
       try {
-        const response = await axios.get(`${base_url}/api/department`);
-        const departmentOptions = response.data.data.map((department) => ({
-          value: department.department_id,
-          label: department.department_name_bn,
-        }));
-        setDepartments(departmentOptions);
+        const response = await axios.get(
+          `${base_url}/api/department?page=${page}`
+        );
+        const data = response.data.data;
+
+        // Accumulate data
+        const newData = [...accumulatedData, ...data];
+
+        // Check if there are more pages
+        if (response.data.next) {
+          return fetchAllPages(response.data.next.page, newData);
+        } else {
+          return newData;
+        }
       } catch (error) {
-        console.error("Error fetching departments:", error);
+        console.error(`Error fetching data on page ${page}:`, error);
+        return accumulatedData;
       }
     };
 
+    try {
+      const allDepartments = await fetchAllPages();
+      const departmentOptions = allDepartments.map((department) => ({
+        value: department.department_id,
+        label: department.department_name_bn,
+      }));
+      setDepartments(departmentOptions);
+    } catch (error) {
+      console.error("Error fetching departments:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchDepartments();
   }, []);
 
@@ -163,10 +211,6 @@ const MeetingForm = () => {
       setSubmitting(false);
       setSubmitSuccess(true);
       setSubmitError(null);
-
-      // Generate PDF and save to local storage
-      // const pdfBlob = await generatePDF(formData);
-      // savePdfToLocalStorage(pdfBlob);
 
       setTimeout(() => {
         navigate(
