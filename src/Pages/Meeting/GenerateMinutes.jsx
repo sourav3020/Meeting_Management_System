@@ -41,7 +41,7 @@ const GenerateMinutes = () => {
   };
 
   const fetchMeetingDetails = async (id) => {
-    const response = await fetch(`http://bike-csecu.com:5000/api/meeting/agenda/${id}`);
+    const response = await fetch(`${base_url}/api/meeting/agenda/${id}`);
     const data = await response.json();
     setAgendaItems(data.map((item) => ({
       topic: item.description,
@@ -61,7 +61,7 @@ const GenerateMinutes = () => {
     const decisions = agendaItems.map(item => item.decision);
 
     try {
-      const response = await fetch(`http://bike-csecu.com:5000/api/meeting/save-decisions/${meetingId}`, {
+      const response = await fetch(`${base_url}/api/meeting/save-decisions/${meetingId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -126,7 +126,7 @@ const GenerateMinutes = () => {
                     />
                   </div>
                 ))}
-                {showAddMoreButton && (
+                {/* {showAddMoreButton && (
                   <Button
                     type="button"
                     onClick={handleAddDecision}
@@ -134,7 +134,7 @@ const GenerateMinutes = () => {
                   >
                     Add More
                   </Button>
-                )}
+                )} */}
               </div>
               <div>
                 <Button

@@ -180,9 +180,9 @@ const FirstPDFFile = ({ meetingID }) => {
     if (title_bn) {
       name += title_bn + " ";
     }
-    name += first_name_bn + " " + last_name_bn;
+    name += first_name_bn + " " + last_name_bn + ", ";
     if (designation_bn !== "অধ্যাপক" && designation_bn) {
-      name += " " + designation_bn;
+      name += designation_bn + ", ";
     }
     return name;
   };
@@ -250,14 +250,14 @@ const FirstPDFFile = ({ meetingID }) => {
               বিজ্ঞপ্তি
             </Text>
             <Text style={{ fontSize: "10px", marginTop: "5px" }}>
-              সংশ্লিষ্ট সকলের অবগতির জন্য জানানো যাচ্ছে যে, বিভাগীয়{" "}
-              {meetingInfo.meeting_type} কমিটির{" "}
-              {convertToBengaliNumber(meetingInfo.meeting_id)}তম সভা আগামী{" "} 
-              {formatMeetingDateTime(meetingInfo.meeting_time).date()} তারিখ,{" "} 
-              {formatMeetingDateTime(meetingInfo.meeting_time).day()}, বেলা{" "} 
-              {formatMeetingDateTime(meetingInfo.meeting_time).time()} ঘটিকায় 
-              বিভাগীয় {meetingInfo.room_name} অনুষ্ঠিত হবে । উক্ত সভায় সম্মানিত 
-              সদস্যবৃন্দকে উপস্থিত থাকার জন্য অনুরোধ করছি ।{"  "}
+              সংশ্লিষ্ট  সকলের  অবগতির  জন্য  জানানো  যাচ্ছে  যে,  বিভাগীয় {" "}
+               {meetingInfo.meeting_type}  কমিটির {" "} 
+               {convertToBengaliNumber(meetingInfo.meeting_id)}তম  সভা  আগামী {" "}  
+               {formatMeetingDateTime(meetingInfo.meeting_time).date()}  তারিখ,{" "}  
+              {formatMeetingDateTime(meetingInfo.meeting_time).day()},  বেলা {" "}  
+               {formatMeetingDateTime(meetingInfo.meeting_time).time()}  ঘটিকায়  
+               বিভাগীয় {meetingInfo.room_name}  অনুষ্ঠিত  হবে ।  উক্ত  সভায়  সম্মানিত 
+               সদস্যবৃন্দকে  উপস্থিত{" "}  থাকার  জন্য  অনুরোধ  করছি ।{"  "}
             </Text>
           </View>
           <View
@@ -276,7 +276,7 @@ const FirstPDFFile = ({ meetingID }) => {
               agendaInfo.map((agenda, index) => (
                 <Text
                   key={agenda.meeting_agenda_id}
-                  style={{ textIndent: "2px" }}
+                  style={{ marginTop: "3px", textIndent: "2px" }}
                 >
                   বিষয় {convertToBengaliNumber(index + 1)} :{" "}
                   {agenda.description} ।{" "}
@@ -317,8 +317,7 @@ const FirstPDFFile = ({ meetingID }) => {
             {attendeeInfo.length > 0 ? (
               attendeeInfo.map((attendee, index) => (
                 <Text key={attendee.user_id} style={{ textIndent: "2px" }}>
-                  {convertToBengaliNumber(index + 1)} ।
-                  {formatFullAttendeeName(attendee)}, চ.বি.{" "}
+                  {convertToBengaliNumber(index + 1)} । {formatFullAttendeeName(attendee)}, চ.বি.{" "}
                 </Text>
               ))
             ) : (

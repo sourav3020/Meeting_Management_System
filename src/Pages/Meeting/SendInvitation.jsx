@@ -5,7 +5,7 @@ import Notification from "@/components/ui/Notification";
 import Spinner from "@/components/ui/Spinner";
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Select from "react-select";
 import Meeting from "./Meeting";
 import SaveInvitation from "./PDF/SaveInvitation";
@@ -14,7 +14,6 @@ const base_url = import.meta.env.VITE_API_URL;
 
 const SendInvitation = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const [selectedAttendees, setSelectedAttendees] = useState([]);
   const [attendeesOptions, setAttendeesOptions] = useState([]);
