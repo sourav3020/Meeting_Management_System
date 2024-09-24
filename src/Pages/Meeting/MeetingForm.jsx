@@ -29,6 +29,33 @@ const MeetingForm = () => {
   const [submitError, setSubmitError] = useState(null);
   const navigate = useNavigate();
 
+  /*
+   Login function to fetch session token 
+  (as login not implemented , here implement default
+  login .require  fix  it in later version ).
+
+     */
+
+  const login = async () => {
+    try {
+      const response = await axios.post(`${base_url}/api/login`, {
+        email: "rudra@cu.ac.bd",
+        password: "rudra1234",
+      });
+
+      if (response.data.session_id) {
+        console.log("Login successful:", response.data.message);
+        localStorage.setItem("session_token", response.data.session_id);
+      }
+    } catch (error) {
+      console.error("Login failed:", error.response?.data || error.message);
+    }
+  };
+
+  useEffect(() => {
+    login();
+  }, []);
+
   //fetch all attendee email and user_id
 
   const fetchEmails = async (attendeeTypes) => {
@@ -37,9 +64,11 @@ const MeetingForm = () => {
         const config = {
           headers: {},
         };
-
+        const token = localStorage.getItem("session_token");
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
         if (type === "student") {
-          const token = "fba7b5c2-427a-11ef-88f4-3c5282764ceb";
           config.headers.Authorization = `Bearer ${token}`;
         }
 
@@ -50,12 +79,10 @@ const MeetingForm = () => {
         const data = response.data.data;
         // const totalRecords = response.data.total_records;
 
-        // Accumulate data
         const newData = [...accumulatedData, ...data];
 
         // Check if there are more pages
         if (response.data.next) {
-          // Recursively fetch the next page
           return fetchAllPages(type, response.data.next.page, newData);
         } else {
           return newData;
@@ -98,30 +125,14 @@ const MeetingForm = () => {
 
   //fetch all department
   const fetchDepartments = async () => {
-    const fetchAllPages = async (page = 1, accumulatedData = []) => {
-      try {
-        const response = await axios.get(
-          `${base_url}/api/department?page=${page}`
-        );
-        const data = response.data.data;
-
-        // Accumulate data
-        const newData = [...accumulatedData, ...data];
-
-        // Check if there are more pages
-        if (response.data.next) {
-          return fetchAllPages(response.data.next.page, newData);
-        } else {
-          return newData;
-        }
-      } catch (error) {
-        console.error(`Error fetching data on page ${page}:`, error);
-        return accumulatedData;
-      }
-    };
-
     try {
-      const allDepartments = await fetchAllPages();
+      const response = await axios.get(`${base_url}/api/department?limit=all`);
+      //console.log(response);
+      const data = response.data;
+      //console.log(data);
+      const newData = [...data];
+
+      const allDepartments = newData;
       const departmentOptions = allDepartments.map((department) => ({
         value: department.department_id,
         label: department.department_name_bn,
@@ -248,8 +259,6 @@ const MeetingForm = () => {
       }
     }
   };
-
-
 
   // Function to convert English numbers to Bengali
   function convertToBengaliNumber(number) {
