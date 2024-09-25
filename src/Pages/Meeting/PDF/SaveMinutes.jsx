@@ -183,7 +183,8 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
                     fontSize: "7px",
                   }}
                 >
-                  "শিক্ষা নিয়ে গড়ব দেশ {"\n"}আলোকিত বাংলাদেশ"
+                  "শিক্ষা নিয়ে গড়ব দেশ {"\n"}
+                  {" "}আলোকিত বাংলাদেশ" {" "}
                 </Text>
               </View>
               <View>
@@ -232,7 +233,7 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
                 {attendeeInfo.length > 0 ? (
                   attendeeInfo.map((attendee, index) => (
                     <Text key={attendee.user_id} style={{ textIndent: "2px" }}>
-                      {convertToBengaliNumber(index + 1)} ।{" "}
+                      {convertToBengaliNumber(index + 1)}।{" "}
                       {formatFullAttendeeName(attendee)}, চ.বি.{" "}
                     </Text>
                   ))

@@ -183,7 +183,7 @@ const SaveInvitation = ({ meetingID, onComplete }) => {
                   }}
                 >
                   "শিক্ষা নিয়ে গড়ব দেশ {"\n"}
-                  আলোকিত বাংলাদেশ"
+                  {" "}আলোকিত বাংলাদেশ" {" "}
                 </Text>
               </View>
               <View>
