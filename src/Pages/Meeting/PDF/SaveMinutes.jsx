@@ -8,17 +8,20 @@ import {
   View,
 } from "@react-pdf/renderer";
 import { useEffect, useState } from "react";
-import thin from "../../../assets/fonts/TiroBangla-Regular.ttf";
+
+//import thin from "../../../assets/fonts/TiroBangla-Regular.ttf";
+import meraj from "../../../assets/fonts/Kalpurush.ttf"
 
 // Register font
-Font.register({ family: "TiroBangla", fonts: [{ src: thin }] });
+//Font.register({ family: "TiroBangla", fonts: [{ src: thin }] });
+Font.register({ family: "Kalpurush", fonts: [{ src: meraj }] });
 
 const base_url = import.meta.env.VITE_API_URL;
 
 const styles = StyleSheet.create({
   page: {
     backgroundColor: "white",
-    fontFamily: "TiroBangla",
+    fontFamily: "Kalpurush",
     padding: "10px",
   },
   section: {
@@ -180,7 +183,7 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
                     fontSize: "7px",
                   }}
                 >
-                  "শিক্ষা নিয়ে গড়ব দেশ {"\n"}শেখ হাসিনার বাংলাদেশ"
+                  "শিক্ষা নিয়ে গড়ব দেশ {"\n"}আলোকিত বাংলাদেশ"
                 </Text>
               </View>
               <View>

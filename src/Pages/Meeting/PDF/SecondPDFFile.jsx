@@ -8,18 +8,19 @@ import {
   Font,
 } from "@react-pdf/renderer";
 import { useParams } from "react-router-dom";
-import thin from "../../../assets/fonts/TiroBangla-Regular.ttf";
-// import Kalpurush from "../assets/fonts/Kalpurush/Kalpurush.ttf";
-// import Notosans from "../assets/fonts/static/NotoSansBengali-Regular.ttf";
 
-Font.register({ family: "TiroBangla", fonts: [{ src: thin }] });
-// Font.register({ family: "Kalpurush", fonts: [{ src: Kalpurush }] });
+//import thin from "../../../assets/fonts/TiroBangla-Regular.ttf";
+// import Notosans from "../assets/fonts/static/NotoSansBengali-Regular.ttf";
+import meraj from "../../../assets/fonts/Kalpurush.ttf"
+
+//Font.register({ family: "TiroBangla", fonts: [{ src: thin }] });
+Font.register({ family: "Kalpurush", fonts: [{ src: meraj }] });
 // Font.register({ family: "NotoSansBengali", fonts: [{ src: Notosans }] });
 
 const styles = StyleSheet.create({
   page: {
     backgroundColor: "white",
-    fontFamily: "TiroBangla",
+    fontFamily: "Kalpurush",
     padding: "10px",
   },
   section: {
