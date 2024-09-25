@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/table";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 const base_url = import.meta.env.VITE_API_URL;
 
@@ -16,6 +17,7 @@ const MeetingList = () => {
   const [meetings, setMeetings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMeetings = async () => {
@@ -54,6 +56,10 @@ const MeetingList = () => {
     return <p>No meetings found.</p>;
   }
 
+  const openSecondPDFViewer = (meetingId) => {
+    window.open(`/main/secondpdf-viewer/${meetingId}`);
+  };
+
   return (
     <div className="p-6">
       <p className="text-center text-black text-2xl font-bold mb-8">
@@ -66,7 +72,6 @@ const MeetingList = () => {
             <TableHead>Meeting Id</TableHead>
             <TableHead>Meeting Type</TableHead>
             <TableHead>Meeting Held On</TableHead>
-            <TableHead>Result</TableHead>
             <TableHead className="text-right">Meeting Minutes</TableHead>
           </TableRow>
         </TableHeader>
@@ -76,16 +81,18 @@ const MeetingList = () => {
               <TableCell>{meeting.meeting_id}</TableCell>
               <TableCell>{meeting.meeting_type}</TableCell>
               <TableCell>{formatDate(meeting.meeting_time)}</TableCell>
-              <TableCell>{meeting.result}</TableCell>
               <TableCell className="text-right">
                 <div className="flex items-center justify-end">
-                  {meeting.pdf_url ? (
-                    <Button href={meeting.pdf_url} target="_blank">
-                      View PDF
-                    </Button>
+                  {/* {meeting.pdf_url ? (
+                    <Button onClick={() => navigate(`/secondpdf-viewer/${meeting.meeting_id}`)}>
+                    View PDF
+                  </Button>
                   ) : (
                     <span>No PDF available</span>
-                  )}
+                  )} */}
+                  <Button onClick={() => openSecondPDFViewer(meeting.meeting_id)}>
+                    View PDF
+                  </Button>
                 </div>
               </TableCell>
             </TableRow>
