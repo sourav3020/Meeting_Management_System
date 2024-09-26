@@ -7,10 +7,6 @@ const SecondPDFViewerPage = () => {
   const navigate = useNavigate();
   const { meetingId } = useParams();
 
-//   const handleBack = () => {
-//     navigate(`/main/sendminutes/${meetingId}`);
-//   };
-
   return (
     <div>
       {/* <button onClick={handleBack} class="mt-1 mr-4 bg-slate-700 text-white p-2">Back</button> */}
