@@ -134,7 +134,7 @@ University of Chittagong
   return (
     <div className="flex">
       <Meeting />
-      <div className="w-full flex flex-col items-center justify-center gap-4 mt-8 p-4 rounded-lg bg-white">
+      <div className="w-full flex flex-col items-center justify-center gap-4 mt-8 p-4 rounded-lg bg-white relative">
         <Label htmlFor="text" className="text-lg font-semibold text-gray-700">
           Send to
         </Label>
@@ -176,11 +176,14 @@ University of Chittagong
 <div className="flex items-center justify-center">
   
 {error && <Modal type="error" message={error} />}
-        {loading && (
-  <div className="flex items-center justify-center fixed inset-0 bg-gray-300 bg-opacity-20 z-50">
-    <Spinner style={{ width: '35px', height: '35px' }} />
-  </div>
-)}
+       
+{loading && (
+    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+      <Spinner style={{ width: '35px', height: '35px' }} />
+    </div>
+  )}
+  
+
 </div>
 
 
