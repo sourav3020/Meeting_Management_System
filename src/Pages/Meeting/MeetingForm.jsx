@@ -251,11 +251,26 @@ const MeetingForm = () => {
       setSubmitError("Error creating meeting. Please try again.");
 
       if (error.response && error.response.status === 400) {
-        setSubmitError("Invalid data provided. Please check your inputs.");
-      } else if (error.response && error.response.status === 500) {
-        setSubmitError("Server error. Please try again later.");
+        setSubmitError(
+          <span className="text-white bg-red-500 p-2 rounded mx-auto mt-4 block">
+            Invalid data provided. Please check your inputs.
+          </span>
+        );
+      }
+      
+       else if (error.response && error.response.status === 500) {
+        setSubmitError( 
+          <span className="text-white bg-red-500 p-2 rounded mx-auto mt-4 block">
+             Server error. Please try again later.
+          </span>
+        );
+         
       } else {
-        setSubmitError("Unexpected error. Please try again.");
+        setSubmitError(
+          <span className="text-white bg-red-500 p-2 rounded mx-auto mt-4 block">
+          Unexpected error. Please try again.
+          </span>
+          );
       }
     }
   };
@@ -400,7 +415,7 @@ const MeetingForm = () => {
       />
       {submitting && <p className="text-blue-500 font-bangla">Submitting...</p>}
       {submitSuccess && (
-        <p className="text-green-500 font-bangla">
+        <p className="text-white bg-green-500 p-2 rounded mx-auto mt-4 block font-bangla">
           Meeting created successfully!
         </p>
       )}

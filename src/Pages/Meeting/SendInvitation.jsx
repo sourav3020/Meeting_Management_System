@@ -85,7 +85,11 @@ University of Chittagong
       }
 
       //const responseData = await response.json();
-      setSuccessMessage("Invitations sent successfully!");
+      setSuccessMessage(
+        <span className="flex items-center justify-center">
+          Invitations sent successfully!
+        </span>
+        );
     } catch (error) {
       setError("Failed to send invitations.");
     } finally {
@@ -161,13 +165,30 @@ University of Chittagong
         </Button>
 
         {successMessage && (
-          <Notification type="success" message={successMessage} />
-        )}
-        {error && <Modal type="error" message={error} />}
-        {loading && <Spinner />}
+  <div className="inset-0 flex items-center justify-center bg-gray bg-opacity-20 z-50">
+    <Notification
+      type="success"
+      message={successMessage}
+      className="bg-white text-gray-800 p-4 rounded-lg shadow-lg"
+    />
+  </div>
+)}
+<div className="flex items-center justify-center">
+  
+{error && <Modal type="error" message={error} />}
+        {loading && (
+  <div className="flex items-center justify-center fixed inset-0 bg-gray-300 bg-opacity-20 z-50">
+    <Spinner style={{ width: '35px', height: '35px' }} />
+  </div>
+)}
+</div>
+
+
       </div>
     </div>
   );
+  
 };
+
 
 export default SendInvitation;
