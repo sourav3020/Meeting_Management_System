@@ -176,6 +176,13 @@ const MeetingForm = () => {
     e.preventDefault();
     setSubmitting(true);
 
+    const token = localStorage.getItem("session_token");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
     //first upload signature and get signature file name to save it in database
     let signatureUrl = "";
     try {
@@ -226,16 +233,19 @@ const MeetingForm = () => {
       );
       console.log("Meeting created:", response.data);
 
-      // // Prepare data for notice
-      // const noticeData = {
-      //   notice_type: meetingType,
-      //   notice_uploaded_time: new Date().toISOString(), // Current date
-      //   notice_description: "There will be a weekly meeting",
-      // };
+      // Prepare data for notice
+      const noticeData = {
+        notice_type: "সিএসই বিভাগের সাপ্তাহিক সভা",
+        notice_title: meetingType,
+        notice_description: `নির্বাচিত শিক্ষকবৃন্দকে জানানো যাচ্ছে যে আগামী ${selectedDate} তারিখে ${roomName}  বিভাগীয় ${meetingType} সভা অনুষ্ঠিত হবে।.
+        সদস্যদের অনুরোধ করা হচ্ছে যে সভায় উপস্থিত থেকে তাদের মূল্যবান মতামত প্রদান করুন। অনুগ্রহ করে সময়ানুবর্তিতা বজায় রাখুন।
+        `,
+        notice_attachment: "no pdf available"
+      };
 
-      // // Create the notice
-      // await axios.post(`${base_url}/api/notice`, noticeData);
-      // console.log("Notice created successfully");
+      // Create the notice
+      const noticeResponse = await axios.post(`${base_url}/api/notice`, noticeData, config);
+      console.log("Notice created: ", noticeResponse.data);
 
       setSubmitting(false);
       setSubmitSuccess(true);
