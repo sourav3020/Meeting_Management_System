@@ -225,6 +225,18 @@ const MeetingForm = () => {
         formData
       );
       console.log("Meeting created:", response.data);
+
+      // // Prepare data for notice
+      // const noticeData = {
+      //   notice_type: meetingType,
+      //   notice_uploaded_time: new Date().toISOString(), // Current date
+      //   notice_description: "There will be a weekly meeting",
+      // };
+
+      // // Create the notice
+      // await axios.post(`${base_url}/api/notice`, noticeData);
+      // console.log("Notice created successfully");
+
       setSubmitting(false);
       setSubmitSuccess(true);
       setSubmitError(null);
@@ -256,21 +268,18 @@ const MeetingForm = () => {
             Invalid data provided. Please check your inputs.
           </span>
         );
-      }
-      
-       else if (error.response && error.response.status === 500) {
-        setSubmitError( 
+      } else if (error.response && error.response.status === 500) {
+        setSubmitError(
           <span className="text-white bg-red-500 p-2 rounded mx-auto mt-4 block">
-             Server error. Please try again later.
+            Server error. Please try again later.
           </span>
         );
-         
       } else {
         setSubmitError(
           <span className="text-white bg-red-500 p-2 rounded mx-auto mt-4 block">
-          Unexpected error. Please try again.
+            Unexpected error. Please try again.
           </span>
-          );
+        );
       }
     }
   };
