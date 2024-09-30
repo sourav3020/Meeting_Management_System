@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Document,
   Page,
@@ -8,10 +8,10 @@ import {
   Font,
 } from "@react-pdf/renderer";
 //import thin from "../../../assets/fonts/TiroBangla-Regular.ttf";
-import meraj from "../../../assets/fonts/Kalpurush.ttf"
+import kalpurush from "../../../assets/fonts/Kalpurush.ttf";
 
 //Font.register({ family: "TiroBangla", fonts: [{ src: thin }] });
-Font.register({ family: "Kalpurush", fonts: [{ src: meraj }] });
+Font.register({ family: "Kalpurush", fonts: [{ src: kalpurush }] });
 
 const base_url = import.meta.env.VITE_API_URL;
 
@@ -31,8 +31,7 @@ const styles = StyleSheet.create({
     lineHeight: "1.5",
   },
   text: {
-   
-    lineHeight: "1.5", 
+    lineHeight: "1.5",
   },
 });
 
@@ -132,7 +131,8 @@ const FirstPDFFile = ({ meetingID }) => {
         hour12: true,
         timeZone: "Asia/Dhaka",
       };
-      return date.toLocaleTimeString("bn-BD", options);
+      const timeString = date.toLocaleTimeString("bn-BD", options);
+      return timeString.replace(/ (AM|PM)/, ""); // Removes AM/PM
     };
 
     // Function to get day of the week
@@ -168,7 +168,7 @@ const FirstPDFFile = ({ meetingID }) => {
       : "";
 
     return convertedNumber;
-  };
+  }
 
   const formatAttendeeName = (attendee) => {
     const { title_bn, first_name_bn, last_name_bn, designation_bn } = attendee;
@@ -189,12 +189,13 @@ const FirstPDFFile = ({ meetingID }) => {
 
   const formatFullAttendeeName = (attendee) => {
     let formattedName = formatAttendeeName(attendee);
-    if (meetingInfo.department_name_bn === "কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং") {
-      formattedName += " সিএসই বিভাগ";
+    if (
+      meetingInfo.department_name_bn === "কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং"
+    ) {
+      formattedName += "সিএসই বিভাগ";
     }
     return formattedName;
   };
-
 
   return (
     <Document>
@@ -207,17 +208,22 @@ const FirstPDFFile = ({ meetingID }) => {
               {meetingInfo.department_name_bn} বিভাগ
             </Text>
           </View>
-          <View style={{ marginTop: "18px", border: "1px solid black" }}>
+          <View
+            style={{
+              marginTop: "18px",
+              border: "1px solid black",
+              marginLeft: "-10px",
+            }}
+          >
             <Text
               style={{
                 paddingTop: "4px",
-                paddingLeft: "2px",
+                paddingLeft: "3px",
                 paddingRight: "2px",
                 fontSize: "7px",
               }}
             >
-              "শিক্ষা নিয়ে গড়ব দেশ {"\n"}
-              {" "}আলোকিত বাংলাদেশ" {" "}
+              "শিক্ষা নিয়ে গড়ব দেশ {"\n"} আলোকিত বাংলাদেশ"{" "}
             </Text>
           </View>
           <View>
@@ -250,14 +256,14 @@ const FirstPDFFile = ({ meetingID }) => {
               বিজ্ঞপ্তি
             </Text>
             <Text style={{ fontSize: "10px", marginTop: "5px" }}>
-              সংশ্লিষ্ট  সকলের  অবগতির  জন্য  জানানো  যাচ্ছে  যে,  বিভাগীয় {" "}
-               {meetingInfo.meeting_type}  কমিটির {" "} 
-               {convertToBengaliNumber(meetingInfo.meeting_id)}তম  সভা  আগামী {" "}  
-               {formatMeetingDateTime(meetingInfo.meeting_time).date()}  তারিখ,{" "}  
-              {formatMeetingDateTime(meetingInfo.meeting_time).day()},  বেলা {" "}  
-               {formatMeetingDateTime(meetingInfo.meeting_time).time()}  ঘটিকায়  
-               বিভাগীয় {meetingInfo.room_name}  অনুষ্ঠিত  হবে ।  উক্ত  সভায়  সম্মানিত 
-               সদস্যবৃন্দকে  উপস্থিত{" "}  থাকার  জন্য  অনুরোধ  করছি ।{"  "}
+              সংশ্লিষ্ট সকলের অবগতির জন্য জানানো যাচ্ছে যে, বিভাগীয়{" "}
+              {meetingInfo.meeting_type} কমিটির{" "}
+              {convertToBengaliNumber(meetingInfo.meeting_id)}তম সভা আগামী{" "}
+              {formatMeetingDateTime(meetingInfo.meeting_time).date()} তারিখ,{" "}
+              {formatMeetingDateTime(meetingInfo.meeting_time).day()}, বেলা{" "}
+              {formatMeetingDateTime(meetingInfo.meeting_time).time()} ঘটিকায়
+              বিভাগীয় {meetingInfo.room_name} অনুষ্ঠিত হবে। উক্ত সভায় সম্মানিত
+              সদস্যবৃন্দকে উপস্থিত থাকার জন্য অনুরোধ করছি ।{"  "}
             </Text>
           </View>
           <View
@@ -317,7 +323,8 @@ const FirstPDFFile = ({ meetingID }) => {
             {attendeeInfo.length > 0 ? (
               attendeeInfo.map((attendee, index) => (
                 <Text key={attendee.user_id} style={{ textIndent: "2px" }}>
-                  {convertToBengaliNumber(index + 1)} । {formatFullAttendeeName(attendee)}, চ.বি.{" "}
+                  {convertToBengaliNumber(index + 1)}।{" "}
+                  {formatFullAttendeeName(attendee)}, চ.বি.{" "}
                 </Text>
               ))
             ) : (
