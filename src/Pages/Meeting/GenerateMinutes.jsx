@@ -49,11 +49,30 @@ const GenerateMinutes = () => {
     })));
   };
 
+
+  const banglaToEnglishNumbers = (input) => {
+    const banglaNumbers = {
+      '০': '0',
+      '১': '1',
+      '২': '2',
+      '৩': '3',
+      '৪': '4',
+      '৫': '5',
+      '৬': '6',
+      '৭': '7',
+      '৮': '8',
+      '৯': '9',
+    };
+
+    return input.split('').map((char) => banglaNumbers[char] || char).join('');
+  };
+
   const handleMeetingIdChange = (e) => {
-    const id = e.target.value;
-    setMeetingId(id);
-    if (id) {
-      fetchMeetingDetails(id);
+    const banglaId = e.target.value;
+    const englishId = banglaToEnglishNumbers(banglaId);
+    setMeetingId(englishId);
+    if (englishId) {
+      fetchMeetingDetails(englishId);
     }
   };
 
@@ -126,15 +145,6 @@ const GenerateMinutes = () => {
                     />
                   </div>
                 ))}
-                {/* {showAddMoreButton && (
-                  <Button
-                    type="button"
-                    onClick={handleAddDecision}
-                    className="mt-2"
-                  >
-                    Add More
-                  </Button>
-                )} */}
               </div>
               <div>
                 <Button

@@ -5,7 +5,7 @@ import Notification from "@/components/ui/Notification";
 import Spinner from "@/components/ui/Spinner";
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { useParams, useNavigate } from "react-router-dom"; 
+import { useParams, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import Meeting from "./Meeting";
 import SaveInvitation from "./PDF/SaveInvitation";
@@ -89,7 +89,11 @@ University of Chittagong
         <span className="flex items-center justify-center">
           Invitations sent successfully!
         </span>
-        );
+      );
+      // Set a timeout to clear the message after 3 seconds
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000); // Change 3000 to your desired duration in milliseconds
     } catch (error) {
       setError("Failed to send invitations.");
     } finally {
@@ -128,7 +132,7 @@ University of Chittagong
   };
 
   const openFirstPDFViewer = () => {
-    navigate(`/main/firstpdf-viewer/${id}`);
+    window.open(`/main/firstpdf-viewer/${id}`);
   };
 
   return (
@@ -165,33 +169,26 @@ University of Chittagong
         </Button>
 
         {successMessage && (
-  <div className="inset-0 flex items-center justify-center bg-gray bg-opacity-20 z-50">
-    <Notification
-      type="success"
-      message={successMessage}
-      className="bg-white text-gray-800 p-4 rounded-lg shadow-lg"
-    />
-  </div>
-)}
-<div className="flex items-center justify-center">
-  
-{error && <Modal type="error" message={error} />}
-       
-{loading && (
-    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-      <Spinner style={{ width: '35px', height: '35px' }} />
-    </div>
-  )}
-  
+          <div className="inset-0 flex items-center justify-center bg-gray bg-opacity-20 z-50">
+            <Notification
+              type="success"
+              message={successMessage}
+              className="bg-white text-gray-800 p-4 rounded-lg shadow-lg"
+            />
+          </div>
+        )}
+        <div className="flex items-center justify-center">
+          {error && <Modal type="error" message={error} />}
 
-</div>
-
-
+          {loading && (
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+              <Spinner style={{ width: "35px", height: "35px" }} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
-  
 };
-
 
 export default SendInvitation;

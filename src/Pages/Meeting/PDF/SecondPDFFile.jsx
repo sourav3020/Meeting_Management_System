@@ -11,10 +11,10 @@ import { useParams } from "react-router-dom";
 
 //import thin from "../../../assets/fonts/TiroBangla-Regular.ttf";
 // import Notosans from "../assets/fonts/static/NotoSansBengali-Regular.ttf";
-import meraj from "../../../assets/fonts/Kalpurush.ttf"
+import kalpurush from "../../../assets/fonts/Kalpurush.ttf";
 
 //Font.register({ family: "TiroBangla", fonts: [{ src: thin }] });
-Font.register({ family: "Kalpurush", fonts: [{ src: meraj }] });
+Font.register({ family: "Kalpurush", fonts: [{ src: kalpurush }] });
 // Font.register({ family: "NotoSansBengali", fonts: [{ src: Notosans }] });
 
 const styles = StyleSheet.create({
@@ -133,7 +133,9 @@ const SecondPDFFile = ({ meetingID }) => {
         hour12: true,
         timeZone: "Asia/Dhaka",
       };
-      return date.toLocaleTimeString("bn-BD", options);
+      // return date.toLocaleTimeString("bn-BD", options);
+      const timeString = date.toLocaleTimeString("bn-BD", options);
+      return timeString.replace(/ (AM|PM)/, ""); // Removes AM/PM
     };
 
     // Function to get day of the week
@@ -209,17 +211,22 @@ const SecondPDFFile = ({ meetingID }) => {
               {meetingInfo.department_name_bn} বিভাগ
             </Text>
           </View>
-          <View style={{ marginTop: "18px", border: "1px solid black" }}>
+          <View
+            style={{
+              marginTop: "18px",
+              border: "1px solid black",
+              marginLeft: "-16px",
+            }}
+          >
             <Text
               style={{
                 paddingTop: "4px",
-                paddingLeft: "2px",
+                paddingLeft: "3px",
                 paddingRight: "2px",
                 fontSize: "7px",
               }}
             >
-              "শিক্ষা নিয়ে গড়ব দেশ {"\n"}
-              {" "}আলোকিত বাংলাদেশ" {" "}
+              "শিক্ষা নিয়ে গড়ব দেশ {"\n"} আলোকিত বাংলাদেশ"{" "}
             </Text>
           </View>
           <View>
@@ -249,8 +256,8 @@ const SecondPDFFile = ({ meetingID }) => {
               {formatMeetingDateTime(meetingInfo.meeting_time).date()} তারিখ,{" "}
               {formatMeetingDateTime(meetingInfo.meeting_time).day()}, বেলা{" "}
               {formatMeetingDateTime(meetingInfo.meeting_time).time()} ঘটিকায়{" "}
-              {meetingInfo.room_name} অনুষ্ঠিত হয় । উক্ত সভায় সভাপতিত্ব করেন
-              অত্র বিভাগের সভাপতি অধ্যাপক ড. মুহাম্মদ সানাউল্লাহ চৌধুরী ।{"  "}
+              {meetingInfo.room_name} অনুষ্ঠিত হয়। উক্ত সভায় সভাপতিত্ব করেন অত্র
+              বিভাগের সভাপতি অধ্যাপক ড. মুহাম্মদ সানাউল্লাহ চৌধুরী।{"  "}
             </Text>
           </View>
           <View
@@ -290,11 +297,11 @@ const SecondPDFFile = ({ meetingID }) => {
                 >
                   <Text style={{ textIndent: "2px" }}>
                     বিষয় {convertToBengaliNumber(index + 1)} :{" "}
-                    {agenda.description} ।{" "}
+                    {agenda.description}।{" "}
                   </Text>
                   <Text style={{ textIndent: "2px" }}>
                     সিদ্ধান্ত {convertToBengaliNumber(index + 1)}:{" "}
-                    {agenda.decision} ।{" "}
+                    {agenda.decision}।{" "}
                   </Text>
                 </View>
               ))
@@ -312,7 +319,7 @@ const SecondPDFFile = ({ meetingID }) => {
           >
             <Text style={{ marginTop: "20px" }}>
               সভায় আর কোন আলোচ্য বিষয় না থাকায় সভাপতি মহোদয় উপস্থিত সকলকে
-              ধন্যবাদ জানিয়ে সভার সমাপ্তি ঘোষনা করেন । {"    "}
+              ধন্যবাদ জানিয়ে সভার সমাপ্তি ঘোষনা করেন। {"    "}
             </Text>
             <Text style={{ marginTop: "45px" }}>
               (অধ্যাপক ড. মুহাম্মদ সানাউল্লাহ চৌধুরী) {"   "}

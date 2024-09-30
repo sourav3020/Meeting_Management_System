@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from "react";
 
 //import thin from "../../../assets/fonts/TiroBangla-Regular.ttf";
-import meraj from "../../../assets/fonts/Kalpurush.ttf"
+import meraj from "../../../assets/fonts/Kalpurush.ttf";
 
 // Register font
 //Font.register({ family: "TiroBangla", fonts: [{ src: thin }] });
@@ -100,7 +100,8 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
         hour12: true,
         timeZone: "Asia/Dhaka",
       };
-      return date.toLocaleTimeString("bn-BD", options);
+      const timeString = date.toLocaleTimeString("bn-BD", options);
+      return timeString.replace(/ (AM|PM)/, ""); // Removes AM/PM
     };
 
     // Function to get day of the week
@@ -174,17 +175,22 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
                   {meetingInfo.department_name_bn} বিভাগ
                 </Text>
               </View>
-              <View style={{ marginTop: "18px", border: "1px solid black" }}>
+              <View
+                style={{
+                  marginTop: "18px",
+                  border: "1px solid black",
+                  marginLeft: "-16px",
+                }}
+              >
                 <Text
                   style={{
                     paddingTop: "4px",
-                    paddingLeft: "2px",
+                    paddingLeft: "3px",
                     paddingRight: "2px",
                     fontSize: "7px",
                   }}
                 >
-                  "শিক্ষা নিয়ে গড়ব দেশ {"\n"}
-                  {" "}আলোকিত বাংলাদেশ" {" "}
+                  "শিক্ষা নিয়ে গড়ব দেশ {"\n"} আলোকিত বাংলাদেশ"{" "}
                 </Text>
               </View>
               <View>
@@ -216,9 +222,9 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
                   তারিখ, {formatMeetingDateTime(meetingInfo.meeting_time).day()}
                   , বেলা{" "}
                   {formatMeetingDateTime(meetingInfo.meeting_time).time()}{" "}
-                  ঘটিকায় {meetingInfo.room_name} অনুষ্ঠিত হয় । উক্ত সভায়
+                  ঘটিকায় {meetingInfo.room_name} অনুষ্ঠিত হয়। উক্ত সভায়
                   সভাপতিত্ব করেন অত্র বিভাগের সভাপতি অধ্যাপক ড. মুহাম্মদ
-                  সানাউল্লাহ চৌধুরী ।{"  "}
+                  সানাউল্লাহ চৌধুরী।{"  "}
                 </Text>
               </View>
               <View
@@ -238,7 +244,7 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
                     </Text>
                   ))
                 ) : (
-                  <Text>Loading attendees...</Text>
+                  <Text>Loading agenda...</Text>
                 )}
               </View>
               <View
@@ -258,11 +264,11 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
                     >
                       <Text style={{ textIndent: "2px" }}>
                         বিষয় {convertToBengaliNumber(index + 1)} :{" "}
-                        {agenda.description} ।{" "}
+                        {agenda.description}।{" "}
                       </Text>
                       <Text style={{ textIndent: "2px" }}>
                         সিদ্ধান্ত {convertToBengaliNumber(index + 1)}:{" "}
-                        {agenda.decision} ।{" "}
+                        {agenda.decision}।{" "}
                       </Text>
                     </View>
                   ))
@@ -280,7 +286,7 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
               >
                 <Text style={{ marginTop: "20px" }}>
                   সভায় আর কোন আলোচ্য বিষয় না থাকায় সভাপতি মহোদয় উপস্থিত সকলকে
-                  ধন্যবাদ জানিয়ে সভার সমাপ্তি ঘোষনা করেন । {"    "}
+                  ধন্যবাদ জানিয়ে সভার সমাপ্তি ঘোষনা করেন। {"    "}
                 </Text>
                 <Text style={{ marginTop: "45px" }}>
                   (অধ্যাপক ড. মুহাম্মদ সানাউল্লাহ চৌধুরী) {"   "}
