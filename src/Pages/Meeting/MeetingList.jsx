@@ -1,4 +1,7 @@
 import { Button } from "@/components/ui/button";
+import DatePicker from 'react-datepicker';
+import { Calendar } from "lucide-react";
+import 'react-datepicker/dist/react-datepicker.css';
 import {
   Table,
   TableBody,
@@ -17,7 +20,11 @@ const MeetingList = () => {
   const [meetings, setMeetings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(""); // For the input field
+  const [filteredQuery, setFilteredQuery] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
   const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchMeetings = async () => {
@@ -43,6 +50,29 @@ const MeetingList = () => {
 
     fetchMeetings();
   }, []);
+ 
+  const handleSearch = () => {
+    // Update filteredQuery when search is clicked
+    setFilteredQuery(searchQuery);
+  };
+
+  // Filter meetings by search query and selected date
+  const filteredMeetings = meetings.filter((meeting) => {
+    const meetingId = String(meeting.meeting_id).toLowerCase();
+    const meetingType = meeting.meeting_type.toLowerCase();
+    const query = filteredQuery.toLowerCase(); // Normalize the filtered query to lowercase
+
+    const matchesQuery = meetingId.includes(query) || meetingType.includes(query);
+
+    // Filter by selected date if one is chosen
+    const meetingDate = new Date(meeting.meeting_time).setHours(0, 0, 0, 0);
+    const selectedMeetingDate = selectedDate ? selectedDate.setHours(0, 0, 0, 0) : null;
+
+    const matchesDate = !selectedMeetingDate || meetingDate === selectedMeetingDate;
+
+    return matchesQuery && matchesDate;
+  });
+  
 
   if (loading) {
     return <p>Loading...</p>;
@@ -65,6 +95,28 @@ const MeetingList = () => {
       <p className="text-center text-black text-2xl font-bold mb-8">
         Meeting Information
       </p>
+     <div className="mb-4 flex justify-between"> {/* DatePicker for selecting a specific meeting date */}
+     <div className="flex items-center space-x-2">
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date) => setSelectedDate(date)}
+            placeholderText="Select a Date"
+            className="border p-2"
+          />
+           <Calendar className=" text-blue-900" />
+        </div> <div>
+        <input
+          type="text"
+          placeholder="Search by ID or Type"
+          value={searchQuery} // Single input for both ID and type
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="border p-2"
+        />
+        <Button onClick={handleSearch} className="ml-2">
+          Search
+        </Button>
+      </div>
+       </div>
 
       <Table>
         <TableHeader>
@@ -76,20 +128,13 @@ const MeetingList = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {meetings.map((meeting) => (
+        {filteredMeetings.map((meeting) => (
             <TableRow key={meeting.meeting_id}>
               <TableCell>{meeting.meeting_id}</TableCell>
               <TableCell>{meeting.meeting_type}</TableCell>
               <TableCell>{formatDate(meeting.meeting_time)}</TableCell>
               <TableCell className="text-right">
                 <div className="flex items-center justify-end">
-                  {/* {meeting.pdf_url ? (
-                    <Button onClick={() => navigate(`/secondpdf-viewer/${meeting.meeting_id}`)}>
-                    View PDF
-                  </Button>
-                  ) : (
-                    <span>No PDF available</span>
-                  )} */}
                   <Button onClick={() => openSecondPDFViewer(meeting.meeting_id)}>
                     View PDF
                   </Button>
