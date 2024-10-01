@@ -85,6 +85,7 @@ University of Chittagong
       setSelectedAttendees([]);
       //const responseData = await response.json();
       setSuccessMessage("Minutes sent successfully!");
+
       // Set a timeout to clear the message after 3 seconds
       setTimeout(() => {
         setSuccessMessage('');

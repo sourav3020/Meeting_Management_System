@@ -13,6 +13,7 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BeatLoader, BounceLoader } from "react-spinners";
 
 const base_url = import.meta.env.VITE_API_URL;
 
@@ -77,7 +78,8 @@ const MeetingList = () => {
   });
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <div className="flex items-center justify-center h-screen"><BeatLoader
+    color="#354992"  size={50}/></div>;
   }
 
   if (error) {

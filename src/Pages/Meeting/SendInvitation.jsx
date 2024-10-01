@@ -90,6 +90,8 @@ University of Chittagong
           Invitations sent successfully!
         </span>
       );
+
+      setSelectedAttendees([])
       // Set a timeout to clear the message after 3 seconds
       setTimeout(() => {
         setSuccessMessage('');
