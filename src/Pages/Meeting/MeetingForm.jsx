@@ -17,13 +17,13 @@ const MeetingForm = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [agendaItems, setAgendaItems] = useState([""]);
   const [roomName, setRoomName] = useState("");
-  const [signature, setSignature] = useState(null);
   const [selectedAttendees, setSelectedAttendees] = useState([]);
   const [emailsOptions, setEmailsOptions] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [showAddMoreButton, setShowAddMoreButton] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [selectedChairman, setSelectedChairman] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(null);
@@ -170,46 +170,16 @@ const MeetingForm = () => {
   const handleUserSelect = (selectedOptions) => {
     setSelectedUsers(selectedOptions || []);
   };
+  const handleChairmanSelect = (selectedOptions) => {
+    setSelectedChairman(selectedOptions || []);
+  };
 
   //handle form submit .
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
 
-    const token = localStorage.getItem("session_token");
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-
-    //first upload signature and get signature file name to save it in database
-    let signatureUrl = "";
-    try {
-      if (signature) {
-        const formData = new FormData();
-        formData.append("image", signature);
-
-        const uploadResponse = await axios.post(
-          `${base_url}/api/upload/image`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-
-        signatureUrl = uploadResponse.data.image.filename;
-        console.log("Signature uploaded:", signatureUrl);
-      }
-    } catch (error) {
-      console.error("Error uploading signature:", error);
-      setSubmitting(false);
-      setSubmitSuccess(false);
-      setSubmitError("Error uploading signature. Please try again.");
-      return;
-    }
+    
     // form data to save meeting
     const formData = {
       meeting_id: parseInt(convertBengaliToEnglish(meetingId)),
@@ -223,9 +193,9 @@ const MeetingForm = () => {
       room_name: roomName,
       selected_attendees: selectedUsers.map((user) => user.value),
       department_id: selectedDepartment ? selectedDepartment.value : null,
-      signature_url: signatureUrl,
+      signature_url: selectedChairman ? selectedChairman.value : null, 
     };
-
+     
     try {
       const response = await axios.post(
         `${base_url}/api/meeting/create-meeting`,
@@ -233,19 +203,16 @@ const MeetingForm = () => {
       );
       console.log("Meeting created:", response.data);
 
-      // Prepare data for notice
-      const noticeData = {
-        notice_type: "সিএসই বিভাগের সাপ্তাহিক সভা",
-        notice_title: meetingType,
-        notice_description: `নির্বাচিত শিক্ষকবৃন্দকে জানানো যাচ্ছে যে আগামী ${selectedDate} তারিখে ${roomName}  বিভাগীয় ${meetingType} সভা অনুষ্ঠিত হবে।.
-        সদস্যদের অনুরোধ করা হচ্ছে যে সভায় উপস্থিত থেকে তাদের মূল্যবান মতামত প্রদান করুন। অনুগ্রহ করে সময়ানুবর্তিতা বজায় রাখুন।
-        `,
-        notice_attachment: "no pdf available"
-      };
+      // // Prepare data for notice
+      // const noticeData = {
+      //   notice_type: meetingType,
+      //   notice_uploaded_time: new Date().toISOString(), // Current date
+      //   notice_description: "There will be a weekly meeting",
+      // };
 
-      // Create the notice
-      const noticeResponse = await axios.post(`${base_url}/api/notice`, noticeData, config);
-      console.log("Notice created: ", noticeResponse.data);
+      // // Create the notice
+      // await axios.post(`${base_url}/api/notice`, noticeData);
+      // console.log("Notice created successfully");
 
       setSubmitting(false);
       setSubmitSuccess(true);
@@ -265,8 +232,9 @@ const MeetingForm = () => {
       setRoomName("");
       setSelectedUsers([]);
       setSelectedDepartment(null);
-      setSignature(null);
+      selectedChairman(null);
     } catch (error) {
+      console.log(selectedChairman);
       console.error("Error creating meeting:", error);
       setSubmitting(false);
       setSubmitSuccess(false);
@@ -396,15 +364,6 @@ const MeetingForm = () => {
           className="font-bangla"
         />
       </div>
-      <div className="grid w-full max-w-sm items-center gap-1.5 mt-4">
-        <Label htmlFor="signature">Signature</Label>
-        <Input
-          id="signature"
-          type="file"
-          onChange={(e) => setSignature(e.target.files[0])}
-          className="font-bangla"
-        />
-      </div>
       <SelectField
         id="attendees"
         label="Select Attendees"
@@ -432,6 +391,14 @@ const MeetingForm = () => {
         value={selectedDepartment}
         onChange={setSelectedDepartment}
       />
+       <SelectField
+  id="chairman"
+  label="Select Meeting Chairman"
+  options={emailsOptions}
+  value={selectedChairman}
+  onChange={handleChairmanSelect}
+/>
+
       {submitting && <p className="text-blue-500 font-bangla">Submitting...</p>}
       {submitSuccess && (
         <p className="text-white bg-green-500 p-2 rounded mx-auto mt-4 block font-bangla">
