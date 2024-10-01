@@ -53,16 +53,16 @@ const FirstPDFFile = ({ meetingID }) => {
             },
           }
         );
-  
+
         if (response.ok) {
           const data = await response.json();
-          setMeetingInfo(data[0]);  // Ensure this sets the first element directly
+          setMeetingInfo(data[0]); // Ensure this sets the first element directly
         }
       } catch (error) {
         console.error("Error fetching meeting info:", error);
       }
     }
-  
+
     async function fetchAgendaInfo() {
       try {
         const response = await fetch(
@@ -82,7 +82,7 @@ const FirstPDFFile = ({ meetingID }) => {
         console.error("Error fetching agenda info:", error);
       }
     }
-  
+
     async function fetchAttendeeInfo() {
       try {
         const response = await fetch(
@@ -102,12 +102,12 @@ const FirstPDFFile = ({ meetingID }) => {
         console.error("Error fetching attendee info:", error);
       }
     }
-  
+
     fetchMeetingInfo();
     fetchAgendaInfo();
     fetchAttendeeInfo();
   }, [meetingID]);
-  
+
   // Separate useEffect to fetch chairman info based on meetingInfo
   useEffect(() => {
     async function fetchChairmanInfo() {
@@ -116,40 +116,35 @@ const FirstPDFFile = ({ meetingID }) => {
         const headers = {
           "Content-Type": "application/json",
         };
-        
+
         // Add the token to the Authorization header if available
         if (token) {
           headers.Authorization = `Bearer ${token}`;
         }
-    
-        const chairmanId = meetingInfo.signature_url;  
-        const response = await fetch(
-          `${base_url}/api/user/${chairmanId}`,
-          {
-            method: "GET",
-            headers,
-          }
-        );
-    
+
+        const chairmanId = meetingInfo.signature_url;
+        const response = await fetch(`${base_url}/api/user/${chairmanId}`, {
+          method: "GET",
+          headers,
+        });
+
         if (response.ok) {
           const data = await response.json();
           setChairmanInfo(data.data);
-          console.log('Chairman Email:', data.data); 
+          console.log("Chairman Email:", data.data);
         } else {
-          console.error('Failed to fetch chairman info:', response.statusText);
+          console.error("Failed to fetch chairman info:", response.statusText);
         }
       } catch (error) {
         console.error("Error fetching chairman info:", error);
       }
     }
-     console.log(meetingInfo.signature_url);
-  
+    console.log(meetingInfo.signature_url);
+
     if (meetingInfo.signature_url) {
       fetchChairmanInfo();
-
     }
-  }, [meetingInfo.signature_url]);  
-  
+  }, [meetingInfo.signature_url]);
 
   // Function to format meeting date, day, and time in Bangla
   const formatMeetingDateTime = (meetingTime) => {
@@ -239,6 +234,14 @@ const FirstPDFFile = ({ meetingID }) => {
     }
     return formattedName;
   };
+
+  const chairmanDisplayName = chairmanInfo ? 
+  `${chairmanInfo.designation_bn ? (chairmanInfo.designation_bn === "অধ্যাপক" ? chairmanInfo.designation_bn + " " : "") : ""}` +
+  `${chairmanInfo.title_bn ? chairmanInfo.title_bn + " " : ""}` +
+  `${chairmanInfo.first_name_bn} ${chairmanInfo.last_name_bn}` 
+  : "Loading chairman...";
+
+
 
   return (
     <Document>
@@ -346,11 +349,14 @@ const FirstPDFFile = ({ meetingID }) => {
           >
             <Text>ধন্যবাদান্তে </Text>
             <Text style={{ marginTop: "25px" }}>
-            
-            ({chairmanInfo? `${chairmanInfo.title_bn ? chairmanInfo.title_bn + " " : ""}${chairmanInfo.designation_bn ? chairmanInfo.designation_bn + " " : ""}${chairmanInfo.first_name_bn} ${chairmanInfo.last_name_bn}`: "Loading chairman..."})
+              {chairmanDisplayName}
             </Text>
             <Text>সভাপতি </Text>
-            <Text>{chairmanInfo ? `${chairmanInfo.department_name_bn} বিভাগ`: "Loading Department..."}{" "} </Text>
+            <Text>
+              {chairmanInfo
+                ? `${chairmanInfo.department_name_bn} বিভাগ`
+                : "Loading Department..."}{" "}
+            </Text>
             <Text>চট্টগ্রাম বিশ্ববিদ্যালয় </Text>
           </View>
           <View

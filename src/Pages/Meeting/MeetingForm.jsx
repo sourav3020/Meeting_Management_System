@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DateTimePickerField from "./DateTimePicker";
 import SelectField from "./SelectedField";
+import SelectedField2 from "./SelectedField2";
 //import { saveAs } from "file-saver";
 
 const base_url = import.meta.env.VITE_API_URL;
@@ -115,6 +116,44 @@ const MeetingForm = () => {
     }
   };
 
+  const formatMeetingDateTime = (time) => {
+    const date = new Date(time);
+
+    // Function to format date as dd/mm/yyyy
+    const formatDate = () => {
+      const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        timeZone: "Asia/Dhaka",
+      };
+      return date.toLocaleDateString("bn-BD", options).replace(/\//g, "/");
+    };
+
+    // Function to format time as HH:MM:SS
+    const formatTime = () => {
+      const options = {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+        timeZone: "Asia/Dhaka",
+      };
+      const timeString = date.toLocaleTimeString("bn-BD", options);
+      return timeString.replace(/ (AM|PM)/, ""); // Removes AM/PM
+    };
+
+    // Function to get day of the week
+    const formatDayOfWeek = () => {
+      return date.toLocaleDateString("bn-BD", { weekday: "long" });
+    };
+
+    return {
+      date: formatDate,
+      time: formatTime,
+      day: formatDayOfWeek,
+    };
+  };
+
   useEffect(() => {
     if (selectedAttendees.length > 0) {
       fetchEmails(selectedAttendees.map((attendee) => attendee.value));
@@ -179,7 +218,13 @@ const MeetingForm = () => {
     e.preventDefault();
     setSubmitting(true);
 
-    
+    const token = localStorage.getItem("session_token");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
     // form data to save meeting
     const formData = {
       meeting_id: parseInt(convertBengaliToEnglish(meetingId)),
@@ -193,9 +238,9 @@ const MeetingForm = () => {
       room_name: roomName,
       selected_attendees: selectedUsers.map((user) => user.value),
       department_id: selectedDepartment ? selectedDepartment.value : null,
-      signature_url: selectedChairman ? selectedChairman.value : null, 
+      signature_url: selectedChairman ? selectedChairman.value : null,
     };
-     
+
     try {
       const response = await axios.post(
         `${base_url}/api/meeting/create-meeting`,
@@ -203,16 +248,24 @@ const MeetingForm = () => {
       );
       console.log("Meeting created:", response.data);
 
-      // // Prepare data for notice
-      // const noticeData = {
-      //   notice_type: meetingType,
-      //   notice_uploaded_time: new Date().toISOString(), // Current date
-      //   notice_description: "There will be a weekly meeting",
-      // };
-
-      // // Create the notice
-      // await axios.post(`${base_url}/api/notice`, noticeData);
-      // console.log("Notice created successfully");
+      // Prepare data for notice
+      const noticeData = {
+        notice_type: `${selectedDepartment.label} বিভাগের সাপ্তাহিক সভা`,
+        notice_title: meetingType,
+        notice_description: `নির্বাচিত শিক্ষকবৃন্দকে জানানো যাচ্ছে যে আগামী ${formatMeetingDateTime(
+          selectedDate
+        ).date()} তারিখে ${roomName} বিভাগীয় ${meetingType} সভা অনুষ্ঠিত হবে।
+        সদস্যদের অনুরোধ করা হচ্ছে যে, সভায় উপস্থিত থেকে তাদের মূল্যবান মতামত প্রদান করুন। অনুগ্রহ করে সময়ানুবর্তিতা বজায় রাখুন।
+        `,
+        notice_attachment: "no pdf available",
+      };
+      // Create the notice
+      const noticeResponse = await axios.post(
+        `${base_url}/api/notice`,
+        noticeData,
+        config
+      );
+      console.log("Notice created: ", noticeResponse.data);
 
       setSubmitting(false);
       setSubmitSuccess(true);
@@ -232,7 +285,7 @@ const MeetingForm = () => {
       setRoomName("");
       setSelectedUsers([]);
       setSelectedDepartment(null);
-      selectedChairman(null);
+      setSelectedChairman(null);
     } catch (error) {
       console.log(selectedChairman);
       console.error("Error creating meeting:", error);
@@ -384,20 +437,21 @@ const MeetingForm = () => {
         value={selectedUsers}
         onChange={handleUserSelect}
       />
-      <SelectField
+      <SelectedField2
         id="department"
         label="Select Department"
         options={departments}
         value={selectedDepartment}
         onChange={setSelectedDepartment}
       />
-       <SelectField
-  id="chairman"
-  label="Select Meeting Chairman"
-  options={emailsOptions}
-  value={selectedChairman}
-  onChange={handleChairmanSelect}
-/>
+      <SelectedField2
+        menuPlacement="top"
+        id="chairman"
+        label="Select Meeting Chairman"
+        options={emailsOptions}
+        value={selectedChairman}
+        onChange={handleChairmanSelect}
+      />
 
       {submitting && <p className="text-blue-500 font-bangla">Submitting...</p>}
       {submitSuccess && (
