@@ -43,6 +43,7 @@ const SaveInvitation = ({ meetingID, onComplete }) => {
   const [meetingInfo, setMeetingInfo] = useState([]);
   const [agendaInfo, setAgendaInfo] = useState([]);
   const [attendeeInfo, setAttendeeInfo] = useState([]);
+  const [chairmanInfo, setChairmanInfo] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -77,6 +78,44 @@ const SaveInvitation = ({ meetingID, onComplete }) => {
 
     fetchData();
   }, [meetingID]);
+
+  // Separate useEffect to fetch chairman info based on meetingInfo
+  useEffect(() => {
+    async function fetchChairmanInfo() {
+      try {
+        const token = localStorage.getItem("session_token");
+        const headers = {
+          "Content-Type": "application/json",
+        };
+
+        // Add the token to the Authorization header if available
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+
+        const chairmanId = meetingInfo.signature_url;
+        const response = await fetch(`${base_url}/api/user/${chairmanId}`, {
+          method: "GET",
+          headers,
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setChairmanInfo(data.data);
+          console.log("Chairman Email:", data.data);
+        } else {
+          console.error("Failed to fetch chairman info:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching chairman info:", error);
+      }
+    }
+    console.log(meetingInfo.signature_url);
+
+    if (meetingInfo.signature_url) {
+      fetchChairmanInfo();
+    }
+  }, [meetingInfo.signature_url]);
 
   // Function to format meeting date, day, and time in Bangla
   const formatMeetingDateTime = (meetingTime) => {
@@ -162,149 +201,159 @@ const SaveInvitation = ({ meetingID, onComplete }) => {
     return formattedName;
   };
 
+  const chairmanDisplayName = chairmanInfo
+    ? `${
+        chairmanInfo.designation_bn
+          ? chairmanInfo.designation_bn === "অধ্যাপক"
+            ? chairmanInfo.designation_bn + " "
+            : ""
+          : ""
+      }` +
+      `${chairmanInfo.title_bn ? chairmanInfo.title_bn + " " : ""}` +
+      `${chairmanInfo.first_name_bn} ${chairmanInfo.last_name_bn}`
+    : "Loading chairman...";
+
   useEffect(() => {
     const generatePDF = async () => {
       const blob = await pdf(
         <Document>
-          <Page size="A4" style={styles.page}>
-            <View style={styles.section}>
-              <View>
-                <Text
-                  style={[styles.text, { marginTop: "10px", fontSize: "12px" }]}
-                >
-                  {meetingInfo.department_name_bn} বিভাগ
-                </Text>
-              </View>
-              <View
-                style={{
-                  marginTop: "18px",
-                  border: "1px solid black",
-                  marginLeft: "-10px",
-                }}
-              >
-                <Text
-                  style={{
-                    paddingTop: "4px",
-                    paddingLeft: "3px",
-                    paddingRight: "2px",
-                    fontSize: "7px",
-                  }}
-                >
-                  "শিক্ষা নিয়ে গড়ব দেশ {"\n"} আলোকিত বাংলাদেশ"{" "}
-                </Text>
-              </View>
-              <View>
-                <Text style={{ fontSize: "10px", marginTop: "29px" }}>
-                  চট্টগ্রাম বিশ্ববিদ্যালয়{"\n"}
-                  <Text style={{ fontSize: "8px" }}>
-                    চট্টগ্রাম, বাংলাদেশ {"\n"}
-                  </Text>
-                  <Text style={{ fontSize: "8px" }}>
-                    তারিখঃ{" "}
-                    {formatMeetingDateTime(meetingInfo.meeting_time).date()}
-                  </Text>
-                </Text>
-              </View>
-            </View>
-            <View style={styles.text}>
-              <View
-                style={{
-                  paddingLeft: "50px",
-                  paddingRight: "30px",
-                  marginTop: "30px",
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: "14px",
-                    textAlign: "center",
-                    textDecoration: "underline",
-                  }}
-                >
-                  বিজ্ঞপ্তি
-                </Text>
-                <Text style={{ fontSize: "10px", marginTop: "5px" }}>
-                  সংশ্লিষ্ট সকলের অবগতির জন্য জানানো যাচ্ছে যে, বিভাগীয়{" "}
-                  {meetingInfo.meeting_type} কমিটির{" "}
-                  {convertToBengaliNumber(meetingInfo.meeting_id)}তম সভা আগামী{" "}
-                  {formatMeetingDateTime(meetingInfo.meeting_time).date()}{" "}
-                  তারিখ, {formatMeetingDateTime(meetingInfo.meeting_time).day()}
-                  , বেলা{" "}
-                  {formatMeetingDateTime(meetingInfo.meeting_time).time()}{" "}
-                  ঘটিকায় বিভাগীয় {meetingInfo.room_name} অনুষ্ঠিত হবে। উক্ত সভায়
-                  সম্মানিত সদস্যবৃন্দকে উপস্থিত থাকার জন্য অনুরোধ করছি ।{"  "}
-                </Text>
-              </View>
-              <View
-                style={{
-                  paddingLeft: "50px",
-                  paddingRight: "30px",
-                  marginTop: "10px",
-                  fontSize: "10px",
-                }}
-              >
-                <Text
-                  style={{ fontWeight: "bold", textDecoration: "underline" }}
-                >
-                  আলোচ্যসূচীঃ{"  "}
-                </Text>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.section}>
+          <View>
+            <Text
+              style={[styles.text, { marginTop: "10px", fontSize: "14px" }]}
+            >
+              {meetingInfo.department_name_bn} বিভাগ
+            </Text>
+          </View>
+          <View
+            style={{
+              marginTop: "18px",
+              border: "1px solid black",
+              marginLeft: "-10px",
+            }}
+          >
+            <Text
+              style={{
+                paddingTop: "4px",
+                paddingLeft: "3px",
+                paddingRight: "2px",
+                fontSize: "9px",
+              }}
+            >
+              "শিক্ষা নিয়ে গড়ব দেশ {"\n"} আলোকিত বাংলাদেশ"{" "}
+            </Text>
+          </View>
+          <View>
+            <Text style={{ fontSize: "12px", marginTop: "29px" }}>
+              চট্টগ্রাম বিশ্ববিদ্যালয়{"\n"}
+              <Text style={{ fontSize: "10px" }}>
+                চট্টগ্রাম, বাংলাদেশ {"\n"}
+              </Text>
+              <Text style={{ fontSize: "10px" }}>
+                তারিখঃ {formatMeetingDateTime(meetingInfo.meeting_time).date()}
+              </Text>
+            </Text>
+          </View>
+        </View>
+        <View style={styles.text}>
+          <View
+            style={{
+              paddingLeft: "50px",
+              paddingRight: "30px",
+              marginTop: "30px",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: "16px",
+                textAlign: "center",
+                textDecoration: "underline",
+              }}
+            >
+              বিজ্ঞপ্তি
+            </Text>
+            <Text style={{ fontSize: "10px", marginTop: "5px" }}>
+              সংশ্লিষ্ট সকলের অবগতির জন্য জানানো যাচ্ছে যে, বিভাগীয়{" "}
+              {meetingInfo.meeting_type} কমিটির{" "}
+              {convertToBengaliNumber(meetingInfo.meeting_id)}তম সভা আগামী{" "}
+              {formatMeetingDateTime(meetingInfo.meeting_time).date()} তারিখ,{" "}
+              {formatMeetingDateTime(meetingInfo.meeting_time).day()}, বেলা{" "}
+              {formatMeetingDateTime(meetingInfo.meeting_time).time()} ঘটিকায়
+              বিভাগীয় {meetingInfo.room_name} অনুষ্ঠিত হবে। উক্ত সভায় সম্মানিত
+              সদস্যবৃন্দকে উপস্থিত থাকার জন্য অনুরোধ করছি ।{"  "}
+            </Text>
+          </View>
+          <View
+            style={{
+              paddingLeft: "50px",
+              paddingRight: "30px",
+              marginTop: "10px",
+              fontSize: "12px",
+            }}
+          >
+            <Text style={{ fontWeight: "bold", textDecoration: "underline" }}>
+              আলোচ্যসূচীঃ{"  "}
+            </Text>
 
-                {agendaInfo.length > 0 ? (
-                  agendaInfo.map((agenda, index) => (
-                    <Text
-                      key={agenda.meeting_agenda_id}
-                      style={{ marginTop: "3px", textIndent: "2px" }}
-                    >
-                      বিষয় {convertToBengaliNumber(index + 1)} :{" "}
-                      {agenda.description} ।{" "}
-                    </Text>
-                  ))
-                ) : (
-                  <Text>Loading agenda...</Text>
-                )}
-              </View>
+            {agendaInfo.length > 0 ? (
+              agendaInfo.map((agenda, index) => (
+                <Text
+                  key={agenda.meeting_agenda_id}
+                  style={{ marginTop: "3px", textIndent: "2px" }}
+                >
+                  বিষয় {convertToBengaliNumber(index + 1)} :{" "}
+                  {agenda.description} ।{" "}
+                </Text>
+              ))
+            ) : (
+              <Text>Loading agenda...</Text>
+            )}
+          </View>
 
-              <View
-                style={{
-                  paddingLeft: "50px",
-                  paddingRight: "30px",
-                  marginTop: "30px",
-                  fontSize: "10px",
-                }}
-              >
-                <Text>ধন্যবাদান্তে </Text>
-                <Text style={{ marginTop: "25px" }}>
-                  (অধ্যাপক ড. মুহাম্মদ সানাউল্লাহ চৌধুরী){" "}
+          <View
+            style={{
+              paddingLeft: "50px",
+              paddingRight: "30px",
+              marginTop: "30px",
+              fontSize: "12px",
+            }}
+          >
+            <Text>ধন্যবাদান্তে </Text>
+            <Text style={{ marginTop: "25px" }}>({chairmanDisplayName})</Text>
+            <Text>সভাপতি </Text>
+            <Text>
+              {chairmanInfo
+                ? `${chairmanInfo.department_name_bn} বিভাগ`
+                : "Loading Department..."}{" "}
+            </Text>
+            <Text>চট্টগ্রাম বিশ্ববিদ্যালয় </Text>
+          </View>
+          <View
+            style={{
+              paddingLeft: "50px",
+              paddingRight: "30px",
+              marginTop: "19px",
+              fontSize: "12px",
+            }}
+          >
+            <Text>
+              অবগতি ও প্রয়োজনীয় ব্যবস্থা গ্রহণের জন্য অনুলিপি প্রেরিত হলঃ{" "}
+            </Text>
+            {attendeeInfo.length > 0 ? (
+              attendeeInfo.map((attendee, index) => (
+                <Text key={attendee.user_id} style={{ textIndent: "2px" }}>
+                  {convertToBengaliNumber(index + 1)}।{" "}
+                  {formatFullAttendeeName(attendee)}, চ.বি.{" "}
                 </Text>
-                <Text>সভাপতি </Text>
-                <Text>কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং বিভাগ </Text>
-                <Text>চট্টগ্রাম বিশ্ববিদ্যালয় </Text>
-              </View>
-              <View
-                style={{
-                  paddingLeft: "50px",
-                  paddingRight: "30px",
-                  marginTop: "19px",
-                  fontSize: "10px",
-                }}
-              >
-                <Text>
-                  অবগতি ও প্রয়োজনীয় ব্যবস্থা গ্রহণের জন্য অনুলিপি প্রেরিত হলঃ{" "}
-                </Text>
-                {attendeeInfo.length > 0 ? (
-                  attendeeInfo.map((attendee, index) => (
-                    <Text key={attendee.user_id} style={{ textIndent: "2px" }}>
-                      {convertToBengaliNumber(index + 1)}।{" "}
-                      {formatFullAttendeeName(attendee)}, চ.বি.{" "}
-                    </Text>
-                  ))
-                ) : (
-                  <Text>Loading attendee...</Text>
-                )}
-              </View>
-            </View>
-          </Page>
-        </Document>
+              ))
+            ) : (
+              <Text>Loading attendee...</Text>
+            )}
+          </View>
+        </View>
+      </Page>
+    </Document>
       ).toBlob();
 
       const reader = new FileReader();
@@ -322,11 +371,12 @@ const SaveInvitation = ({ meetingID, onComplete }) => {
     if (
       meetingInfo.meeting_time &&
       agendaInfo.length > 0 &&
-      attendeeInfo.length > 0
+      attendeeInfo.length > 0 &&
+      chairmanInfo
     ) {
       generatePDF();
     }
-  }, [meetingID, meetingInfo, agendaInfo, attendeeInfo, onComplete]);
+  }, [meetingID, meetingInfo, agendaInfo, attendeeInfo, chairmanInfo, onComplete]);
 
   return null;
 };
