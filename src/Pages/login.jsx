@@ -37,10 +37,11 @@ const Login = () => {
         {success && <p className="text-green-500 text-center">{success}</p>} 
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+            <label htmlFor="email" className="block text-base font-bold text-gray-700">Email</label>
             <input
               type="email"
               id="email"
+              placeholder='Enter your email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -48,10 +49,11 @@ const Login = () => {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+            <label htmlFor="password" className="block text-base font-bold text-gray-700">Password</label>
             <input
               type="password"
               id="password"
+               placeholder='Password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -65,6 +67,9 @@ const Login = () => {
             >
               Login
             </button>
+          </div>
+          <div className='text-center'>
+          Forgot <button className='ml-0' > <span className='text-red-400'>Password ?</span> </button>
           </div>
         </form>
       </div>
