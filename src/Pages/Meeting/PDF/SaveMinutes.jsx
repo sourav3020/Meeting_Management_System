@@ -42,6 +42,7 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
   const [meetingInfo, setMeetingInfo] = useState([]);
   const [agendaInfo, setAgendaInfo] = useState([]);
   const [attendeeInfo, setAttendeeInfo] = useState([]);
+  const [chairmanInfo, setChairmanInfo] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -76,6 +77,44 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
 
     fetchData();
   }, [meetingID]);
+
+  // Separate useEffect to fetch chairman info based on meetingInfo
+  useEffect(() => {
+    async function fetchChairmanInfo() {
+      try {
+        const token = localStorage.getItem("session_token");
+        const headers = {
+          "Content-Type": "application/json",
+        };
+
+        // Add the token to the Authorization header if available
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+
+        const chairmanId = meetingInfo.signature_url;
+        const response = await fetch(`${base_url}/api/user/${chairmanId}`, {
+          method: "GET",
+          headers,
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setChairmanInfo(data.data);
+          console.log("Chairman Email:", data.data);
+        } else {
+          console.error("Failed to fetch chairman info:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching chairman info:", error);
+      }
+    }
+    console.log(meetingInfo.signature_url);
+
+    if (meetingInfo.signature_url) {
+      fetchChairmanInfo();
+    }
+  }, [meetingInfo.signature_url]);
 
   // Function to format meeting date, day, and time in Bangla
   const formatMeetingDateTime = (meetingTime) => {
@@ -161,6 +200,18 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
     }
     return formattedName;
   };
+  
+  const chairmanDisplayName = chairmanInfo
+    ? `${
+        chairmanInfo.designation_bn
+          ? chairmanInfo.designation_bn === "অধ্যাপক"
+            ? chairmanInfo.designation_bn + " "
+            : ""
+          : ""
+      }` +
+      `${chairmanInfo.title_bn ? chairmanInfo.title_bn + " " : ""}` +
+      `${chairmanInfo.first_name_bn} ${chairmanInfo.last_name_bn}`
+    : "Loading chairman...";
 
   useEffect(() => {
     const generatePDF = async () => {
@@ -170,7 +221,7 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
             <View style={styles.section}>
               <View>
                 <Text
-                  style={[styles.text, { marginTop: "10px", fontSize: "12px" }]}
+                  style={[styles.text, { marginTop: "10px", fontSize: "14px" }]}
                 >
                   {meetingInfo.department_name_bn} বিভাগ
                 </Text>
@@ -187,19 +238,19 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
                     paddingTop: "4px",
                     paddingLeft: "3px",
                     paddingRight: "2px",
-                    fontSize: "7px",
+                    fontSize: "9px",
                   }}
                 >
                   "শিক্ষা নিয়ে গড়ব দেশ {"\n"} আলোকিত বাংলাদেশ"{" "}
                 </Text>
               </View>
               <View>
-                <Text style={{ fontSize: "10px", marginTop: "29px" }}>
+                <Text style={{ fontSize: "12px", marginTop: "29px" }}>
                   চট্টগ্রাম বিশ্ববিদ্যালয়{"\n"}
-                  <Text style={{ fontSize: "8px" }}>
+                  <Text style={{ fontSize: "10px" }}>
                     চট্টগ্রাম, বাংলাদেশ {"\n"}
                   </Text>
-                  <Text style={{ fontSize: "8px" }}>
+                  <Text style={{ fontSize: "10px" }}>
                     তারিখঃ{" "}
                     {formatMeetingDateTime(meetingInfo.meeting_time).date()}
                   </Text>
@@ -214,7 +265,7 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
                   marginTop: "30px",
                 }}
               >
-                <Text style={{ fontSize: "10px" }}>
+                <Text style={{ fontSize: "12px" }}>
                   {meetingInfo.department_name_bn} বিভাগের{" "}
                   {meetingInfo.meeting_type} কমিটির{" "}
                   {convertToBengaliNumber(meetingInfo.meeting_id)}তম সভা অদ্য{" "}
@@ -223,8 +274,8 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
                   , বেলা{" "}
                   {formatMeetingDateTime(meetingInfo.meeting_time).time()}{" "}
                   ঘটিকায় {meetingInfo.room_name} অনুষ্ঠিত হয়। উক্ত সভায়
-                  সভাপতিত্ব করেন অত্র বিভাগের সভাপতি অধ্যাপক ড. মুহাম্মদ
-                  সানাউল্লাহ চৌধুরী।{"  "}
+                  সভাপতিত্ব করেন অত্র বিভাগের সভাপতি {chairmanDisplayName}।
+                  {"  "}
                 </Text>
               </View>
               <View
@@ -232,7 +283,7 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
                   paddingLeft: "50px",
                   paddingRight: "30px",
                   marginTop: "6px",
-                  fontSize: "10px",
+                  fontSize: "12px",
                 }}
               >
                 <Text>সভায় নিম্নলিখিত সদস্যবৃন্দ উপস্থিত ছিলেনঃ</Text>
@@ -252,7 +303,7 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
                   paddingLeft: "50px",
                   paddingRight: "30px",
                   marginTop: "14px",
-                  fontSize: "10px",
+                  fontSize: "12px",
                 }}
               >
                 <Text>সভায় নিম্নলিখিত সিদ্ধান্তসমূহ গৃহীত হয়ঃ </Text>
@@ -281,7 +332,7 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
                 style={{
                   paddingLeft: "50px",
                   paddingRight: "30px",
-                  fontSize: "10px",
+                  fontSize: "12px",
                 }}
               >
                 <Text style={{ marginTop: "20px" }}>
@@ -289,10 +340,14 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
                   ধন্যবাদ জানিয়ে সভার সমাপ্তি ঘোষনা করেন। {"    "}
                 </Text>
                 <Text style={{ marginTop: "45px" }}>
-                  (অধ্যাপক ড. মুহাম্মদ সানাউল্লাহ চৌধুরী) {"   "}
+                  ({chairmanDisplayName}) {"   "}
                 </Text>
                 <Text>সভাপতি</Text>
-                <Text>কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং বিভাগ</Text>
+                <Text>
+                  {chairmanInfo
+                    ? `${chairmanInfo.department_name_bn} বিভাগ`
+                    : "Loading Department..."}{" "}
+                </Text>
                 <Text>চট্টগ্রাম বিশ্ববিদ্যালয়</Text>
               </View>
             </View>
@@ -313,11 +368,12 @@ const SaveMinutes = ({ meetingID, onComplete }) => {
     if (
       meetingInfo.meeting_time &&
       agendaInfo.length > 0 &&
-      attendeeInfo.length > 0
+      attendeeInfo.length > 0 &&
+      chairmanInfo
     ) {
       generatePDF();
     }
-  }, [meetingID, meetingInfo, agendaInfo, attendeeInfo, onComplete]);
+  }, [meetingID, meetingInfo, agendaInfo, attendeeInfo, chairmanInfo, onComplete]);
 
   return null;
 };

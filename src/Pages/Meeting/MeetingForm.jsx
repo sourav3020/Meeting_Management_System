@@ -250,8 +250,8 @@ const MeetingForm = () => {
 
       // Prepare data for notice
       const noticeData = {
-        notice_type: `${selectedDepartment.label} বিভাগের সাপ্তাহিক সভা`,
-        notice_title: meetingType,
+        notice_type: meetingType,
+        notice_title: `${selectedDepartment.label} বিভাগের সাপ্তাহিক সভা`,
         notice_description: `নির্বাচিত শিক্ষকবৃন্দকে জানানো যাচ্ছে যে আগামী ${formatMeetingDateTime(
           selectedDate
         ).date()} তারিখে ${roomName} বিভাগীয় ${meetingType} সভা অনুষ্ঠিত হবে।

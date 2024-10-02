@@ -235,13 +235,17 @@ const FirstPDFFile = ({ meetingID }) => {
     return formattedName;
   };
 
-  const chairmanDisplayName = chairmanInfo ? 
-  `${chairmanInfo.designation_bn ? (chairmanInfo.designation_bn === "অধ্যাপক" ? chairmanInfo.designation_bn + " " : "") : ""}` +
-  `${chairmanInfo.title_bn ? chairmanInfo.title_bn + " " : ""}` +
-  `${chairmanInfo.first_name_bn} ${chairmanInfo.last_name_bn}` 
-  : "Loading chairman...";
-
-
+  const chairmanDisplayName = chairmanInfo
+    ? `${
+        chairmanInfo.designation_bn
+          ? chairmanInfo.designation_bn === "অধ্যাপক"
+            ? chairmanInfo.designation_bn + " "
+            : ""
+          : ""
+      }` +
+      `${chairmanInfo.title_bn ? chairmanInfo.title_bn + " " : ""}` +
+      `${chairmanInfo.first_name_bn} ${chairmanInfo.last_name_bn}`
+    : "Loading chairman...";
 
   return (
     <Document>
@@ -249,7 +253,7 @@ const FirstPDFFile = ({ meetingID }) => {
         <View style={styles.section}>
           <View>
             <Text
-              style={[styles.text, { marginTop: "10px", fontSize: "12px" }]}
+              style={[styles.text, { marginTop: "10px", fontSize: "14px" }]}
             >
               {meetingInfo.department_name_bn} বিভাগ
             </Text>
@@ -266,19 +270,19 @@ const FirstPDFFile = ({ meetingID }) => {
                 paddingTop: "4px",
                 paddingLeft: "3px",
                 paddingRight: "2px",
-                fontSize: "7px",
+                fontSize: "9px",
               }}
             >
               "শিক্ষা নিয়ে গড়ব দেশ {"\n"} আলোকিত বাংলাদেশ"{" "}
             </Text>
           </View>
           <View>
-            <Text style={{ fontSize: "10px", marginTop: "29px" }}>
+            <Text style={{ fontSize: "12px", marginTop: "29px" }}>
               চট্টগ্রাম বিশ্ববিদ্যালয়{"\n"}
-              <Text style={{ fontSize: "8px" }}>
+              <Text style={{ fontSize: "10px" }}>
                 চট্টগ্রাম, বাংলাদেশ {"\n"}
               </Text>
-              <Text style={{ fontSize: "8px" }}>
+              <Text style={{ fontSize: "10px" }}>
                 তারিখঃ {formatMeetingDateTime(meetingInfo.meeting_time).date()}
               </Text>
             </Text>
@@ -294,14 +298,14 @@ const FirstPDFFile = ({ meetingID }) => {
           >
             <Text
               style={{
-                fontSize: "14px",
+                fontSize: "16px",
                 textAlign: "center",
                 textDecoration: "underline",
               }}
             >
               বিজ্ঞপ্তি
             </Text>
-            <Text style={{ fontSize: "10px", marginTop: "5px" }}>
+            <Text style={{ fontSize: "12px", marginTop: "5px" }}>
               সংশ্লিষ্ট সকলের অবগতির জন্য জানানো যাচ্ছে যে, বিভাগীয়{" "}
               {meetingInfo.meeting_type} কমিটির{" "}
               {convertToBengaliNumber(meetingInfo.meeting_id)}তম সভা আগামী{" "}
@@ -317,7 +321,7 @@ const FirstPDFFile = ({ meetingID }) => {
               paddingLeft: "50px",
               paddingRight: "30px",
               marginTop: "10px",
-              fontSize: "10px",
+              fontSize: "12px",
             }}
           >
             <Text style={{ fontWeight: "bold", textDecoration: "underline" }}>
@@ -344,13 +348,11 @@ const FirstPDFFile = ({ meetingID }) => {
               paddingLeft: "50px",
               paddingRight: "30px",
               marginTop: "30px",
-              fontSize: "10px",
+              fontSize: "12px",
             }}
           >
             <Text>ধন্যবাদান্তে </Text>
-            <Text style={{ marginTop: "25px" }}>
-              {chairmanDisplayName}
-            </Text>
+            <Text style={{ marginTop: "25px" }}>({chairmanDisplayName})</Text>
             <Text>সভাপতি </Text>
             <Text>
               {chairmanInfo
@@ -364,7 +366,7 @@ const FirstPDFFile = ({ meetingID }) => {
               paddingLeft: "50px",
               paddingRight: "30px",
               marginTop: "19px",
-              fontSize: "10px",
+              fontSize: "12px",
             }}
           >
             <Text>
