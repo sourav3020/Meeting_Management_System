@@ -24,12 +24,25 @@ const MeetingList = () => {
   const [searchQuery, setSearchQuery] = useState(""); // For the input field
   const [filteredQuery, setFilteredQuery] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
+ 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMeetings = async () => {
       try {
-        const response = await axios.get(`${base_url}/api/meeting/meetingInfo`);
+
+        var token= localStorage.getItem("authToken") ;
+        //console.log(token);
+        const userResponse = await axios.get(`${base_url}/api/myInfo`, {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        });
+        //console.log("User Response:", userResponse.data); 
+      
+        const user_id = userResponse.data?.user?.user_id; 
+
+        const response = await axios.get(`${base_url}/api/meeting/user-meeting-info/${user_id}`);
         if (response.data && Array.isArray(response.data)) {
           const sortedMeetings = response.data.sort(
             (a, b) => new Date(b.meeting_time) - new Date(a.meeting_time)
