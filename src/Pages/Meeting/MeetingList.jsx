@@ -31,6 +31,7 @@ const MeetingList = () => {
     const fetchMeetings = async () => {
       try {
         const token = localStorage.getItem("authToken");
+        console.log("meeting list page token: ", token);
         const userResponse = await axios.get(`${base_url}/api/myInfo`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -38,6 +39,7 @@ const MeetingList = () => {
         });
 
         const user_id = userResponse.data?.user?.user_id;
+        console.log("user id: ",user_id);
         const response = await axios.get(
           `${base_url}/api/meeting/user-meeting-info/${user_id}`
         );

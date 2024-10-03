@@ -65,7 +65,7 @@ const MeetingForm = () => {
         const config = {
           headers: {},
         };
-        const token = localStorage.getItem("authToken");
+        const token = localStorage.getItem('authToken');
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -218,7 +218,7 @@ const MeetingForm = () => {
     e.preventDefault();
     setSubmitting(true);
 
-    const token = localStorage.getItem("session_token");
+    const token = localStorage.getItem('authToken');
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,

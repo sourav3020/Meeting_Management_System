@@ -5,6 +5,13 @@ import {  useLocation } from "react-router-dom";
 
 const Meeting = () => {
     const location = useLocation();
+
+     // Handle Logout
+     const handleLogout = () => {
+        localStorage.removeItem('authToken');  
+        window.location.href = '/';  
+    };
+
     return (
         <aside className=" bg-gray-200 w-70 col-span-2 h-screen sticky top-0 left-0 overflow-auto p-4 lg:p-5">
             <p className="text-2xl font-extrabold mb-5">Meeting Management</p>
@@ -42,6 +49,19 @@ const Meeting = () => {
 >
     <FileText ></FileText>
     <span>Meeting History</span>
+</NavLink>
+
+
+<NavLink onClick={handleLogout}
+    to='/' 
+    className={({ isActive }) =>
+        `p-3 rounded-md gap-2 hover:bg-slate-400 hover:text-white transition-all flex items-center mb-3 ${
+            isActive ? 'bg-slate-400 text-white' : 'bg-gray'
+        }`
+    }
+>
+    <FileText ></FileText>
+    <span>Logout</span>
 </NavLink>
 
 
