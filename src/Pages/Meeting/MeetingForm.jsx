@@ -37,27 +37,27 @@ const MeetingForm = () => {
 
      */
 
-  const login = async () => {
-    try {
-      const response = await axios.post(`${base_url}/api/login`, {
-        email: "rudra@cu.ac.bd",
-        password: "rudra1234",
-      });
+  // const login = async () => {
+  //   try {
+  //     const response = await axios.post(`${base_url}/api/login`, {
+  //       email: "rudra@cu.ac.bd",
+  //       password: "rudra1234",
+  //     });
 
-      if (response.data.session_id) {
-        console.log("Login successful:", response.data.message);
-        localStorage.setItem("session_token", response.data.session_id);
-      }
-    } catch (error) {
-      console.error("Login failed:", error.response?.data || error.message);
-    }
-  };
+  //     if (response.data.session_id) {
+  //       console.log("Login successful:", response.data.message);
+  //       localStorage.setItem("session_token", response.data.session_id);
+  //     }
+  //   } catch (error) {
+  //     console.error("Login failed:", error.response?.data || error.message);
+  //   }
+  // };
 
-  useEffect(() => {
-    login();
-  }, []);
+  // useEffect(() => {
+  //   login();
+  // }, []);
 
-  //fetch all attendee email and user_id
+  // //fetch all attendee email and user_id
 
   const fetchEmails = async (attendeeTypes) => {
     const fetchAllPages = async (type, page = 1, accumulatedData = []) => {
@@ -65,7 +65,7 @@ const MeetingForm = () => {
         const config = {
           headers: {},
         };
-        const token = localStorage.getItem("session_token");
+        const token = localStorage.getItem("authToken");
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
