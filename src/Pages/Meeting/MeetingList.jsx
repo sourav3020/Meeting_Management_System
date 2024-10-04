@@ -1,7 +1,4 @@
 import { Button } from "@/components/ui/button";
-import DatePicker from "react-datepicker";
-import { Calendar } from "lucide-react";
-import "react-datepicker/dist/react-datepicker.css";
 import {
   Table,
   TableBody,
@@ -11,9 +8,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import axios from "axios";
+import { Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
-import { BeatLoader, BounceLoader } from "react-spinners";
+import { BeatLoader } from "react-spinners";
 
 const base_url = import.meta.env.VITE_API_URL;
 
@@ -22,14 +22,27 @@ const MeetingList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState(""); // For the input field
-  const [filteredQuery, setFilteredQuery] = useState("");
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [filteredQuery, setFilteredQuery] = useState(""); // Actual filtered value for search
+  const [selectedDate, setSelectedDate] = useState(null); // Date state
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMeetings = async () => {
       try {
-        const response = await axios.get(`${base_url}/api/meeting/meetingInfo`);
+        const token = localStorage.getItem("authToken");
+        console.log("meeting list page token: ", token);
+        const userResponse = await axios.get(`${base_url}/api/myInfo`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const user_id = userResponse.data?.user?.user_id;
+        console.log("user id: ",user_id);
+        const response = await axios.get(
+          `${base_url}/api/meeting/user-meeting-info/${user_id}`
+        );
         if (response.data && Array.isArray(response.data)) {
           const sortedMeetings = response.data.sort(
             (a, b) => new Date(b.meeting_time) - new Date(a.meeting_time)
@@ -37,7 +50,6 @@ const MeetingList = () => {
           setMeetings(sortedMeetings);
           setLoading(false);
         } else {
-          console.error("Invalid data structure returned:", response.data);
           setError(new Error("Invalid data structure returned"));
           setLoading(false);
         }
@@ -52,20 +64,28 @@ const MeetingList = () => {
   }, []);
 
   const handleSearch = () => {
-    // Update filteredQuery when search is clicked
-    setFilteredQuery(searchQuery);
+    setFilteredQuery(searchQuery); // Set the filtered query to trigger search
+    setSearchQuery(""); // Clear the search input field after searching
+  };
+
+  const handleClearDate = () => {
+    setSelectedDate(null); // Clear selected date when 'X' is clicked
+  };
+
+  const handleShowAll = () => {
+    setFilteredQuery(""); // Clear the search query filter
+    setSelectedDate(null); // Clear the selected date filter
   };
 
   // Filter meetings by search query and selected date
   const filteredMeetings = meetings.filter((meeting) => {
     const meetingId = String(meeting.meeting_id).toLowerCase();
     const meetingType = meeting.meeting_type.toLowerCase();
-    const query = filteredQuery.toLowerCase(); // Normalize the filtered query to lowercase
+    const query = filteredQuery.toLowerCase();
 
     const matchesQuery =
       meetingId.includes(query) || meetingType.includes(query);
 
-    // Filter by selected date if one is chosen
     const meetingDate = new Date(meeting.meeting_time).setHours(0, 0, 0, 0);
     const selectedMeetingDate = selectedDate
       ? selectedDate.setHours(0, 0, 0, 0)
@@ -78,8 +98,11 @@ const MeetingList = () => {
   });
 
   if (loading) {
-    return <div className="flex items-center justify-center h-screen"><BeatLoader
-    color="#354992"  size={50}/></div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <BeatLoader color="#354992" size={50} />
+      </div>
+    );
   }
 
   if (error) {
@@ -100,7 +123,6 @@ const MeetingList = () => {
         Meeting Information
       </p>
       <div className="mb-4 flex justify-between">
-        {" "}
         {/* DatePicker for selecting a specific meeting date */}
         <div className="flex items-center space-x-2">
           <DatePicker
@@ -109,50 +131,57 @@ const MeetingList = () => {
             placeholderText="Select a Date"
             className="border p-2"
           />
-          <Calendar className=" text-blue-900" />
-        </div>{" "}
+          <Calendar className="text-blue-900" />
+        </div>
         <div>
           <input
             type="text"
             placeholder="Search by ID or Type"
-            value={searchQuery} // Single input for both ID and type
+            value={searchQuery} // Controlled input for both ID and type
             onChange={(e) => setSearchQuery(e.target.value)}
             className="border p-2"
           />
           <Button onClick={handleSearch} className="ml-2">
             Search
           </Button>
+          <Button onClick={handleShowAll} className="ml-2">
+            Show All
+          </Button>
         </div>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Meeting Id</TableHead>
-            <TableHead>Meeting Type</TableHead>
-            <TableHead>Meeting Held On</TableHead>
-            <TableHead className="text-right">Meeting Minutes</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredMeetings.map((meeting) => (
-            <TableRow key={meeting.meeting_id}>
-              <TableCell>{meeting.meeting_id}</TableCell>
-              <TableCell>{meeting.meeting_type}</TableCell>
-              <TableCell>{formatDate(meeting.meeting_time)}</TableCell>
-              <TableCell className="text-right">
-                <div className="flex items-center justify-end">
-                  <Button
-                    onClick={() => openSecondPDFViewer(meeting.meeting_id)}
-                  >
-                    View PDF
-                  </Button>
-                </div>
-              </TableCell>
+      {filteredMeetings.length === 0 ? (
+        <p className="text-center text-red-500">No found Any Meeting</p>
+      ) : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Meeting Id</TableHead>
+              <TableHead>Meeting Type</TableHead>
+              <TableHead>Meeting Held On</TableHead>
+              <TableHead className="text-right">Meeting Minutes</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {filteredMeetings.map((meeting) => (
+              <TableRow key={meeting.meeting_id}>
+                <TableCell>{meeting.meeting_id}</TableCell>
+                <TableCell>{meeting.meeting_type}</TableCell>
+                <TableCell>{formatDate(meeting.meeting_time)}</TableCell>
+                <TableCell className="text-right">
+                  <div className="flex items-center justify-end">
+                    <Button
+                      onClick={() => openSecondPDFViewer(meeting.meeting_id)}
+                    >
+                      View PDF
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
     </div>
   );
 };

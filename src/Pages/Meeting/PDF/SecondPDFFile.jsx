@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import {
   Document,
   Page,
@@ -7,11 +7,12 @@ import {
   StyleSheet,
   Font,
 } from "@react-pdf/renderer";
-import { useParams } from "react-router-dom";
+
 
 //import thin from "../../../assets/fonts/TiroBangla-Regular.ttf";
 // import Notosans from "../assets/fonts/static/NotoSansBengali-Regular.ttf";
 import kalpurush from "../../../assets/fonts/Kalpurush.ttf";
+import { departmentSuffixMap } from "../departmentMappings";
 
 //Font.register({ family: "TiroBangla", fonts: [{ src: thin }] });
 Font.register({ family: "Kalpurush", fonts: [{ src: kalpurush }] });
@@ -117,26 +118,27 @@ const SecondPDFFile = ({ meetingID }) => {
   useEffect(() => {
     async function fetchChairmanInfo() {
       try {
-        const token = localStorage.getItem("session_token");
+        const token = localStorage.getItem('authToken');
+        console.log("second pdf token: ", token);
         const headers = {
           "Content-Type": "application/json",
         };
-
+  
         // Add the token to the Authorization header if available
         if (token) {
           headers.Authorization = `Bearer ${token}`;
         }
-
+  
         const chairmanId = meetingInfo.signature_url;
+        console.log("chairman idd", chairmanId);
+  
         const response = await fetch(`${base_url}/api/user/${chairmanId}`, {
           method: "GET",
           headers,
         });
-
         if (response.ok) {
           const data = await response.json();
           setChairmanInfo(data.data);
-          console.log("Chairman Email:", data.data);
         } else {
           console.error("Failed to fetch chairman info:", response.statusText);
         }
@@ -144,12 +146,13 @@ const SecondPDFFile = ({ meetingID }) => {
         console.error("Error fetching chairman info:", error);
       }
     }
-    console.log(meetingInfo.signature_url);
-
+    console.log("chairman id: ", meetingInfo.signature_url);
+  
     if (meetingInfo.signature_url) {
       fetchChairmanInfo();
     }
   }, [meetingInfo.signature_url]);
+  
 
   // Function to format meeting date, day, and time in Bangla
   const formatMeetingDateTime = (meetingTime) => {
@@ -231,13 +234,14 @@ const SecondPDFFile = ({ meetingID }) => {
     return name;
   };
 
+  
   const formatFullAttendeeName = (attendee) => {
     let formattedName = formatAttendeeName(attendee);
-    if (
-      meetingInfo.department_name_bn === "কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং"
-    ) {
-      formattedName += "সিএসই বিভাগ";
-    }
+    const departmentSuffix = departmentSuffixMap[meetingInfo.department_name_bn];
+     if (departmentSuffix)
+       {
+         formattedName += departmentSuffix;
+      }
     return formattedName;
   };
 

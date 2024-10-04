@@ -1,10 +1,8 @@
-import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import {  useParams } from 'react-router-dom';
 import { PDFViewer } from '@react-pdf/renderer';
 import SecondPDFFile from './PDF/SecondPDFFile';
 
 const SecondPDFViewerPage = () => {
-  const navigate = useNavigate();
   const { meetingId } = useParams();
 
   return (

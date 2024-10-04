@@ -1,14 +1,15 @@
-import { useEffect, useState } from "react";
 import {
   Document,
+  Font,
   Page,
+  StyleSheet,
   Text,
   View,
-  StyleSheet,
-  Font,
 } from "@react-pdf/renderer";
+import { useEffect, useState } from "react";
 //import thin from "../../../assets/fonts/TiroBangla-Regular.ttf";
 import kalpurush from "../../../assets/fonts/Kalpurush.ttf";
+import { departmentSuffixMap } from "../departmentMappings";
 
 //Font.register({ family: "TiroBangla", fonts: [{ src: thin }] });
 Font.register({ family: "Kalpurush", fonts: [{ src: kalpurush }] });
@@ -112,7 +113,7 @@ const FirstPDFFile = ({ meetingID }) => {
   useEffect(() => {
     async function fetchChairmanInfo() {
       try {
-        const token = localStorage.getItem("session_token");
+        const token = localStorage.getItem('authToken');
         const headers = {
           "Content-Type": "application/json",
         };
@@ -227,11 +228,11 @@ const FirstPDFFile = ({ meetingID }) => {
 
   const formatFullAttendeeName = (attendee) => {
     let formattedName = formatAttendeeName(attendee);
-    if (
-      meetingInfo.department_name_bn === "কম্পিউটার সায়েন্স এন্ড ইঞ্জিনিয়ারিং"
-    ) {
-      formattedName += "সিএসই বিভাগ";
-    }
+    const departmentSuffix = departmentSuffixMap[meetingInfo.department_name_bn];
+     if (departmentSuffix)
+       {
+         formattedName += departmentSuffix;
+      }
     return formattedName;
   };
 
